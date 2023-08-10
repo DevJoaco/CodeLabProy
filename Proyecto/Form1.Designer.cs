@@ -242,7 +242,6 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.TransparencyKey = System.Drawing.Color.Lime;
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.pPrincipal.ResumeLayout(false);
             this.pPrincipal.PerformLayout();
             this.pIniciarSesión.ResumeLayout(false);

@@ -48,9 +48,12 @@ namespace Proyecto
             TextBox tx = sender as TextBox;
             foreach (Control ctr in pIniciarSesión.Controls)
             {
-                if (ctr is Panel && ctr.Name == "p" + tx.Tag.ToString())
+
+                if (ctr is TextBox)
                 {
-                    ctr.BackColor = Color.Black;
+
+                    pUsuarioIS.BackColor = Color.Black;
+
                 }
             }
         }
@@ -60,9 +63,11 @@ namespace Proyecto
             TextBox tx = sender as TextBox;
             foreach (Control ctr in pIniciarSesión.Controls)
             {
-                if (ctr is Panel && ctr.Name == "p" + tx.Tag.ToString())
+
+                if (ctr is TextBox)
                 {
-                    ctr.BackColor = Color.Silver;
+
+                    BackColor = Color.Silver;
                 }
             }
         }
@@ -164,11 +169,6 @@ namespace Proyecto
         private void label14_Click(object sender, EventArgs e)
         {
             // LABEL INICIAR SESIÓN  ( LABEL )
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
         }
     }
 }
