@@ -165,5 +165,10 @@ namespace Proyecto
         {
             // LABEL INICIAR SESIÓN  ( LABEL )
         }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
