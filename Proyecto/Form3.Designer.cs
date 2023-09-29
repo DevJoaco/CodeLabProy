@@ -251,7 +251,7 @@ namespace Proyecto
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(96, 13);
+            this.label1.Location = new System.Drawing.Point(89, 24);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(128, 13);
             this.label1.TabIndex = 34;
@@ -310,11 +310,11 @@ namespace Proyecto
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(55, 23);
+            this.label2.Location = new System.Drawing.Point(95, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(136, 13);
+            this.label2.Size = new System.Drawing.Size(101, 13);
             this.label2.TabIndex = 35;
-            this.label2.Text = "Registro de CLIENTES";
+            this.label2.Text = "Lista de Clientes";
             // 
             // panel4
             // 
