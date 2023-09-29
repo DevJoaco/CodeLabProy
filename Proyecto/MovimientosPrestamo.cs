@@ -52,7 +52,7 @@ namespace Proyecto
             {
 
 
-                string consulta = "SELECT Cliente_ID, CONCAT(Nombre, ' ', Apellido) AS NombreCompleto FROM cliente";
+                string consulta = "SELECT Cliente_ID, CONCAT(Nombre, ' ', Apellido) AS NombreCompleto FROM cliente WHERE DadoDeBaja = 0";
                 MySqlCommand cmd = new MySqlCommand(consulta, Conexion);
                 MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
                 DataTable tablaClientesP = new DataTable();
