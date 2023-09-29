@@ -1,42 +1,35 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Proyecto
 {
     internal class Conexion
     {
-
         private MySqlConnection conexion;
-        private String server = "localhost";
-        private String database = "AgenciaDeCambio";
-        private String user = "root";
-        private String password = "";
+        private string server = "codelabmysqlserver.ddns.net";
+        private string database = "codelabagencia";
+        private string user = "codelab";
+        private string password = "1145";
+        private int port = 3306; 
         private string cadenaConexion;
-
 
         public Conexion()
         {
-            cadenaConexion = "DataBase=" + database +
-                "; DataSourse=" + server +
+            cadenaConexion = "Server=" + server +
+               "; Port=" + port +
+                "; Database=" + database +
                 "; User ID=" + user +
                 "; Password=" + password;
         }
 
         public MySqlConnection GetConexion()
         {
-                if (conexion == null)
-                {
-                    conexion = new MySqlConnection(cadenaConexion);
-                    conexion.Open();
-                }
+            if (conexion == null)
+            {
+                conexion = new MySqlConnection(cadenaConexion);
+                conexion.Open();
+            }
 
-                return conexion;
-            
+            return conexion;
         }
     }
 }
