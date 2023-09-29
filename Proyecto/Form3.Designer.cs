@@ -44,6 +44,7 @@ namespace Proyecto
             this.txtApellidoIN = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txtNombreIN = new System.Windows.Forms.TextBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.panel11 = new System.Windows.Forms.Panel();
             this.label9 = new System.Windows.Forms.Label();
             this.cmbClientes = new System.Windows.Forms.ComboBox();
@@ -52,8 +53,6 @@ namespace Proyecto
             this.panel16 = new System.Windows.Forms.Panel();
             this.panel15 = new System.Windows.Forms.Panel();
             this.panel12 = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.panel9 = new System.Windows.Forms.Panel();
             this.panel14 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -102,9 +101,9 @@ namespace Proyecto
             this.button8 = new System.Windows.Forms.Button();
             this.btnCerrarSesionM = new System.Windows.Forms.Button();
             this.panel17.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel11.SuspendLayout();
             this.panel12.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel9.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel21.SuspendLayout();
@@ -147,7 +146,6 @@ namespace Proyecto
             this.panel17.Controls.Add(this.txtApellidoIN);
             this.panel17.Controls.Add(this.label1);
             this.panel17.Controls.Add(this.txtNombreIN);
-            this.panel17.Controls.Add(this.pictureBox2);
             this.panel17.Location = new System.Drawing.Point(1, 213);
             this.panel17.Name = "panel17";
             this.panel17.Size = new System.Drawing.Size(322, 411);
@@ -268,6 +266,18 @@ namespace Proyecto
             this.txtNombreIN.Size = new System.Drawing.Size(100, 13);
             this.txtNombreIN.TabIndex = 2;
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
+            this.pictureBox2.Location = new System.Drawing.Point(-20, 227);
+            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(327, 189);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox2.TabIndex = 8;
+            this.pictureBox2.TabStop = false;
+            // 
             // panel11
             // 
             this.panel11.BackColor = System.Drawing.Color.Gray;
@@ -300,11 +310,11 @@ namespace Proyecto
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(46, 17);
+            this.label2.Location = new System.Drawing.Point(55, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(186, 13);
+            this.label2.Size = new System.Drawing.Size(136, 13);
             this.label2.TabIndex = 35;
-            this.label2.Text = "Registro de CAMBIO de DIVISA";
+            this.label2.Text = "Registro de CLIENTES";
             // 
             // panel4
             // 
@@ -333,32 +343,11 @@ namespace Proyecto
             // panel12
             // 
             this.panel12.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel12.Controls.Add(this.label3);
+            this.panel12.Controls.Add(this.pictureBox2);
             this.panel12.Location = new System.Drawing.Point(691, 213);
             this.panel12.Name = "panel12";
             this.panel12.Size = new System.Drawing.Size(292, 411);
             this.panel12.TabIndex = 41;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(55, 13);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(164, 13);
-            this.label3.TabIndex = 36;
-            this.label3.Text = "Registro de TRANSACCION";
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(-107, 238);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(327, 189);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 8;
-            this.pictureBox2.TabStop = false;
             // 
             // panel9
             // 
@@ -980,11 +969,10 @@ namespace Proyecto
             this.Load += new System.EventHandler(this.Form3_Load);
             this.panel17.ResumeLayout(false);
             this.panel17.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel11.ResumeLayout(false);
             this.panel11.PerformLayout();
             this.panel12.ResumeLayout(false);
-            this.panel12.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel9.ResumeLayout(false);
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
@@ -1028,7 +1016,6 @@ namespace Proyecto
         private System.Windows.Forms.Panel panel16;
         private System.Windows.Forms.Panel panel15;
         private System.Windows.Forms.Panel panel12;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.Panel panel9;
         private System.Windows.Forms.Panel panel14;

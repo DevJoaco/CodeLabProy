@@ -56,16 +56,16 @@
             this.btnEliminarC = new System.Windows.Forms.Button();
             this.panel9 = new System.Windows.Forms.Panel();
             this.panel10 = new System.Windows.Forms.Panel();
-            this.txtEntradaModi = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.cmbClientesMod = new System.Windows.Forms.ComboBox();
             this.panel17 = new System.Windows.Forms.Panel();
-            this.rbNombre = new System.Windows.Forms.RadioButton();
-            this.rbApellido = new System.Windows.Forms.RadioButton();
-            this.rbCedula = new System.Windows.Forms.RadioButton();
-            this.rbCelular = new System.Windows.Forms.RadioButton();
-            this.rbDireccion = new System.Windows.Forms.RadioButton();
             this.button1 = new System.Windows.Forms.Button();
+            this.rbDireccion = new System.Windows.Forms.RadioButton();
+            this.rbCelular = new System.Windows.Forms.RadioButton();
+            this.rbCedula = new System.Windows.Forms.RadioButton();
+            this.rbApellido = new System.Windows.Forms.RadioButton();
+            this.rbNombre = new System.Windows.Forms.RadioButton();
+            this.cmbClientesMod = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.txtEntradaModi = new System.Windows.Forms.TextBox();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.panel2.SuspendLayout();
@@ -94,9 +94,9 @@
             this.bntIngresarM.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.bntIngresarM.Image = ((System.Drawing.Image)(resources.GetObject("bntIngresarM.Image")));
             this.bntIngresarM.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.bntIngresarM.Location = new System.Drawing.Point(25, 254);
+            this.bntIngresarM.Location = new System.Drawing.Point(25, 260);
             this.bntIngresarM.Name = "bntIngresarM";
-            this.bntIngresarM.Size = new System.Drawing.Size(195, 59);
+            this.bntIngresarM.Size = new System.Drawing.Size(195, 53);
             this.bntIngresarM.TabIndex = 1;
             this.bntIngresarM.Text = "Actualizar";
             this.bntIngresarM.UseVisualStyleBackColor = false;
@@ -126,7 +126,7 @@
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
             this.pictureBox3.Location = new System.Drawing.Point(301, -27);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(202, 150);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -167,7 +167,7 @@
             // 
             this.panel6.BackColor = System.Drawing.Color.Silver;
             this.panel6.Location = new System.Drawing.Point(72, 159);
-            this.panel6.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel6.Margin = new System.Windows.Forms.Padding(2);
             this.panel6.Name = "panel6";
             this.panel6.Size = new System.Drawing.Size(100, 2);
             this.panel6.TabIndex = 12;
@@ -176,7 +176,7 @@
             // 
             this.panel5.BackColor = System.Drawing.Color.Silver;
             this.panel5.Location = new System.Drawing.Point(72, 114);
-            this.panel5.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel5.Margin = new System.Windows.Forms.Padding(2);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(100, 2);
             this.panel5.TabIndex = 14;
@@ -204,7 +204,7 @@
             // 
             this.pUsuarioIS.BackColor = System.Drawing.Color.Silver;
             this.pUsuarioIS.Location = new System.Drawing.Point(72, 69);
-            this.pUsuarioIS.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pUsuarioIS.Margin = new System.Windows.Forms.Padding(2);
             this.pUsuarioIS.Name = "pUsuarioIS";
             this.pUsuarioIS.Size = new System.Drawing.Size(100, 2);
             this.pUsuarioIS.TabIndex = 11;
@@ -367,33 +367,6 @@
             this.panel10.Size = new System.Drawing.Size(252, 332);
             this.panel10.TabIndex = 10;
             // 
-            // txtEntradaModi
-            // 
-            this.txtEntradaModi.BackColor = System.Drawing.Color.White;
-            this.txtEntradaModi.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtEntradaModi.Location = new System.Drawing.Point(65, 213);
-            this.txtEntradaModi.Name = "txtEntradaModi";
-            this.txtEntradaModi.Size = new System.Drawing.Size(100, 13);
-            this.txtEntradaModi.TabIndex = 47;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(61, 13);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(135, 19);
-            this.label7.TabIndex = 8;
-            this.label7.Text = "Modificar Cliente";
-            // 
-            // cmbClientesMod
-            // 
-            this.cmbClientesMod.FormattingEnabled = true;
-            this.cmbClientesMod.Location = new System.Drawing.Point(65, 50);
-            this.cmbClientesMod.Name = "cmbClientesMod";
-            this.cmbClientesMod.Size = new System.Drawing.Size(121, 21);
-            this.cmbClientesMod.TabIndex = 50;
-            // 
             // panel17
             // 
             this.panel17.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -411,49 +384,21 @@
             this.panel17.Size = new System.Drawing.Size(236, 332);
             this.panel17.TabIndex = 45;
             // 
-            // rbNombre
+            // button1
             // 
-            this.rbNombre.AutoSize = true;
-            this.rbNombre.Location = new System.Drawing.Point(33, 82);
-            this.rbNombre.Name = "rbNombre";
-            this.rbNombre.Size = new System.Drawing.Size(62, 17);
-            this.rbNombre.TabIndex = 51;
-            this.rbNombre.TabStop = true;
-            this.rbNombre.Text = "Nombre";
-            this.rbNombre.UseVisualStyleBackColor = true;
-            // 
-            // rbApellido
-            // 
-            this.rbApellido.AutoSize = true;
-            this.rbApellido.Location = new System.Drawing.Point(33, 105);
-            this.rbApellido.Name = "rbApellido";
-            this.rbApellido.Size = new System.Drawing.Size(62, 17);
-            this.rbApellido.TabIndex = 52;
-            this.rbApellido.TabStop = true;
-            this.rbApellido.Text = "Apellido";
-            this.rbApellido.UseVisualStyleBackColor = true;
-            // 
-            // rbCedula
-            // 
-            this.rbCedula.AutoSize = true;
-            this.rbCedula.Location = new System.Drawing.Point(33, 129);
-            this.rbCedula.Name = "rbCedula";
-            this.rbCedula.Size = new System.Drawing.Size(105, 17);
-            this.rbCedula.TabIndex = 53;
-            this.rbCedula.TabStop = true;
-            this.rbCedula.Text = "Cedula Identidad";
-            this.rbCedula.UseVisualStyleBackColor = true;
-            // 
-            // rbCelular
-            // 
-            this.rbCelular.AutoSize = true;
-            this.rbCelular.Location = new System.Drawing.Point(33, 152);
-            this.rbCelular.Name = "rbCelular";
-            this.rbCelular.Size = new System.Drawing.Size(57, 17);
-            this.rbCelular.TabIndex = 54;
-            this.rbCelular.TabStop = true;
-            this.rbCelular.Text = "Celular";
-            this.rbCelular.UseVisualStyleBackColor = true;
+            this.button1.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
+            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.Location = new System.Drawing.Point(21, 260);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(189, 47);
+            this.button1.TabIndex = 56;
+            this.button1.Text = "Modificar";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // rbDireccion
             // 
@@ -466,21 +411,76 @@
             this.rbDireccion.Text = "Direccion";
             this.rbDireccion.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // rbCelular
             // 
-            this.button1.BackColor = System.Drawing.SystemColors.ScrollBar;
-            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
-            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.button1.Location = new System.Drawing.Point(33, 260);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(177, 47);
-            this.button1.TabIndex = 56;
-            this.button1.Text = "Modificar";
-            this.button1.UseVisualStyleBackColor = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.rbCelular.AutoSize = true;
+            this.rbCelular.Location = new System.Drawing.Point(33, 152);
+            this.rbCelular.Name = "rbCelular";
+            this.rbCelular.Size = new System.Drawing.Size(57, 17);
+            this.rbCelular.TabIndex = 54;
+            this.rbCelular.TabStop = true;
+            this.rbCelular.Text = "Celular";
+            this.rbCelular.UseVisualStyleBackColor = true;
+            // 
+            // rbCedula
+            // 
+            this.rbCedula.AutoSize = true;
+            this.rbCedula.Location = new System.Drawing.Point(33, 129);
+            this.rbCedula.Name = "rbCedula";
+            this.rbCedula.Size = new System.Drawing.Size(105, 17);
+            this.rbCedula.TabIndex = 53;
+            this.rbCedula.TabStop = true;
+            this.rbCedula.Text = "Cedula Identidad";
+            this.rbCedula.UseVisualStyleBackColor = true;
+            // 
+            // rbApellido
+            // 
+            this.rbApellido.AutoSize = true;
+            this.rbApellido.Location = new System.Drawing.Point(33, 105);
+            this.rbApellido.Name = "rbApellido";
+            this.rbApellido.Size = new System.Drawing.Size(62, 17);
+            this.rbApellido.TabIndex = 52;
+            this.rbApellido.TabStop = true;
+            this.rbApellido.Text = "Apellido";
+            this.rbApellido.UseVisualStyleBackColor = true;
+            // 
+            // rbNombre
+            // 
+            this.rbNombre.AutoSize = true;
+            this.rbNombre.Location = new System.Drawing.Point(33, 82);
+            this.rbNombre.Name = "rbNombre";
+            this.rbNombre.Size = new System.Drawing.Size(62, 17);
+            this.rbNombre.TabIndex = 51;
+            this.rbNombre.TabStop = true;
+            this.rbNombre.Text = "Nombre";
+            this.rbNombre.UseVisualStyleBackColor = true;
+            // 
+            // cmbClientesMod
+            // 
+            this.cmbClientesMod.FormattingEnabled = true;
+            this.cmbClientesMod.Location = new System.Drawing.Point(65, 50);
+            this.cmbClientesMod.Name = "cmbClientesMod";
+            this.cmbClientesMod.Size = new System.Drawing.Size(121, 21);
+            this.cmbClientesMod.TabIndex = 50;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(61, 13);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(135, 19);
+            this.label7.TabIndex = 8;
+            this.label7.Text = "Modificar Cliente";
+            // 
+            // txtEntradaModi
+            // 
+            this.txtEntradaModi.BackColor = System.Drawing.Color.White;
+            this.txtEntradaModi.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtEntradaModi.Location = new System.Drawing.Point(65, 213);
+            this.txtEntradaModi.Name = "txtEntradaModi";
+            this.txtEntradaModi.Size = new System.Drawing.Size(100, 13);
+            this.txtEntradaModi.TabIndex = 47;
             // 
             // Form4
             // 
