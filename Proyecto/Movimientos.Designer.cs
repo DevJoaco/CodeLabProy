@@ -36,11 +36,11 @@
             this.pMovimientos = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.btnVolverMo = new System.Windows.Forms.Button();
             this.panel6 = new System.Windows.Forms.Panel();
             this.panel7 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.btnVolverMo = new System.Windows.Forms.Button();
             this.pMovimientos.SuspendLayout();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -103,6 +103,7 @@
             this.pMovimientos.Name = "pMovimientos";
             this.pMovimientos.Size = new System.Drawing.Size(210, 348);
             this.pMovimientos.TabIndex = 5;
+            this.pMovimientos.Paint += new System.Windows.Forms.PaintEventHandler(this.pMovimientos_Paint);
             // 
             // panel5
             // 
@@ -123,33 +124,6 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(800, 71);
             this.panel3.TabIndex = 15;
-            // 
-            // panel6
-            // 
-            this.panel6.BackColor = System.Drawing.SystemColors.InfoText;
-            this.panel6.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.panel6.Location = new System.Drawing.Point(-38, 67);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(800, 33);
-            this.panel6.TabIndex = 14;
-            // 
-            // panel7
-            // 
-            this.panel7.BackColor = System.Drawing.SystemColors.InfoText;
-            this.panel7.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.panel7.Location = new System.Drawing.Point(0, 427);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(731, 25);
-            this.panel7.TabIndex = 18;
-            // 
-            // panel8
-            // 
-            this.panel8.BackColor = System.Drawing.SystemColors.InfoText;
-            this.panel8.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.panel8.Location = new System.Drawing.Point(703, 90);
-            this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(25, 348);
-            this.panel8.TabIndex = 19;
             // 
             // pictureBox3
             // 
@@ -177,6 +151,33 @@
             this.btnVolverMo.Text = "Volver";
             this.btnVolverMo.UseVisualStyleBackColor = false;
             this.btnVolverMo.Click += new System.EventHandler(this.btnVolverMo_Click);
+            // 
+            // panel6
+            // 
+            this.panel6.BackColor = System.Drawing.SystemColors.InfoText;
+            this.panel6.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.panel6.Location = new System.Drawing.Point(-38, 67);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(800, 33);
+            this.panel6.TabIndex = 14;
+            // 
+            // panel7
+            // 
+            this.panel7.BackColor = System.Drawing.SystemColors.InfoText;
+            this.panel7.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.panel7.Location = new System.Drawing.Point(0, 427);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(731, 25);
+            this.panel7.TabIndex = 18;
+            // 
+            // panel8
+            // 
+            this.panel8.BackColor = System.Drawing.SystemColors.InfoText;
+            this.panel8.ForeColor = System.Drawing.SystemColors.ControlDark;
+            this.panel8.Location = new System.Drawing.Point(703, 90);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(25, 348);
+            this.panel8.TabIndex = 19;
             // 
             // Movimientos
             // 

@@ -41,7 +41,7 @@ namespace Proyecto
             {
 
 
-                string consulta = "SELECT Cliente_ID, CONCAT(Nombre, ' ', Apellido) AS NombreCompleto FROM cliente";
+                string consulta = "SELECT Cliente_ID, CONCAT(Nombre, ' ', Apellido) AS NombreCompleto FROM cliente WHERE DadoDeBaja = 0";
                 MySqlCommand cmd = new MySqlCommand(consulta, Conexion);
                 MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
                 DataTable tablaClientesP = new DataTable();
@@ -76,8 +76,8 @@ namespace Proyecto
                 cmbMonedasT.DisplayMember = "Nombre";
                 cmbMonedaVT.DisplayMember = "Nombre";
                 cmbMonedasT.ValueMember = "ValorCompra";
-                cmbMonedaVT.ValueMember = "ValorVenta"; 
-
+                cmbMonedaVT.ValueMember = "ValorVenta";
+                
                 cmbMonedaVT.DataSource = tablaMonedasT;
                 cmbMonedasT.DataSource = tablaMonedasT;
 
@@ -119,6 +119,26 @@ namespace Proyecto
 
         }
 
+       
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
 

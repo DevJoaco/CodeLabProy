@@ -206,12 +206,26 @@ namespace Proyecto
                 txtContraseñaIS.UseSystemPasswordChar = false;
             }
         }
-                     
+        private void btnIniciarSesión_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+
+                btnIniciarSesión_Click(sender, e);
+            }
+        }
 
 
 
 
-        private void Form1_Load(object sender, EventArgs e)
+
+
+
+
+
+
+
+            private void Form1_Load(object sender, EventArgs e)
         {
 
         }
@@ -284,14 +298,8 @@ namespace Proyecto
 
         }
 
-        private void btnIniciarSesión_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-
-                btnIniciarSesión_Click(sender, e);
-            }
+        
         }
     }
-}
+
 

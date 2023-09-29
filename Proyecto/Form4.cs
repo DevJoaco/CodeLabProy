@@ -30,7 +30,7 @@ namespace Proyecto
         }
 
 
-        public void AgregarDatosAlDataGridView(string nombreMoneda, string valorCompra, string valorVenta)
+        public void AggDatosDGV(string nombreMoneda, string valorCompra, string valorVenta)
         {
             Form3 form3 = new Form3();
 
@@ -78,7 +78,7 @@ namespace Proyecto
             string valorCompra = txtValorCompra.Text;
             string valorVenta = txtValorVenta.Text;
 
-            AgregarDatosAlDataGridView(nombreMoneda, valorCompra, valorVenta);
+            AggDatosDGV(nombreMoneda, valorCompra, valorVenta);
 
 
         }

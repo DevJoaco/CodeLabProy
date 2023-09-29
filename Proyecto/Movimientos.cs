@@ -94,5 +94,10 @@ namespace Proyecto
         {
 
         }
+
+        private void pMovimientos_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
