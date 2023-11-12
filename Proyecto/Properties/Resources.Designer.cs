@@ -83,13 +83,23 @@ namespace Proyecto.Properties {
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap A_libertad2 {
+        internal static System.Drawing.Bitmap A_libertad2 
+        {
             get {
                 object obj = ResourceManager.GetObject("A_libertad2", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-        
+
+        internal static System.Drawing.Bitmap candado
+        {
+            get
+            {
+                object obje = ResourceManager.GetObject("candado", resourceCulture);
+                return ((System.Drawing.Bitmap)(obje));
+            }
+        }
+
         /// <summary>
         ///   Busca un recurso adaptado de tipo System.Drawing.Bitmap.
         /// </summary>
