@@ -1,12 +1,14 @@
 ﻿using MySql.Data.MySqlClient;
 using OpenQA.Selenium;
-using OpenQA.Selenium.DevTools.V116.Runtime;
 using OpenQA.Selenium.Edge;
+using OpenQA.Selenium.Interactions;
 using System;
 using System.Data;
 using System.Drawing;
-using System.Runtime.Remoting.Channels;
 using System.Windows.Forms;
+using static Proyecto.frmMenu;
+using Microsoft.VisualBasic;
+
 
 namespace Proyecto
 {
@@ -24,10 +26,11 @@ namespace Proyecto
         string CotizacionDolarEbrouVenta = "0.00";
         string CotizacionEuroCompra = "0.00";
         string CotizacionEuroVenta = "0.00";
-        string CotizacionPesoArgentinoCompra = "0.00";
-        string CotizacionPesoArgentinoVenta = "0.00";
+        string CotizacionPesoArgentinoCompra = "0.00O";
+        string CotizacionPesoArgentinoVenta = "0.000";
         string CotizacionRealCompra = "0.00";
         string CotizacionRealVenta = "0.00";
+
         public frmTransaccion()
         {
             InitializeComponent();
@@ -35,19 +38,22 @@ namespace Proyecto
             miConexion = new Conexion();
             Conexion = miConexion.GetConexion();
             this.Load += Transaccion_Load;
+            string usuario = Sesion.NombreUsuario;
+            string cargoUsuario = Sesion.CargoUsuario;
 
         }
 
         private void Transaccion_Load(object sender, EventArgs e)
         {
-
+            cargarDólar();
             CargarMonedasT();
             CargarClientesT();
 
-            txtMontoCompraT.ReadOnly = true;
-            txtMontoVentaT.ReadOnly = true;
+            txtMontoVentaM.Enabled = false;
+            txtMontoCompraM.Enabled = false;
             txtMontoCompraT.Enabled = false;
             txtMontoVentaT.Enabled = false;
+
 
             cmbModoAM.SelectedItem = "Automatico";
 
@@ -80,11 +86,7 @@ namespace Proyecto
                 e.Handled = true;
             }
         }
-        private void txtClienteRecibe_TextChanged(object sender, EventArgs e)
-        {
-            txtClienteRecibe.KeyPress += TextBoxSoloNumeros_KeyPress;
-            txtMontoT.KeyPress += TextBoxSoloNumeros_KeyPress;
-        }
+ 
         public void CargarClientesT()
         {
             try
@@ -93,6 +95,8 @@ namespace Proyecto
                 MySqlCommand cmd = new MySqlCommand(consulta, Conexion);
                 MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
                 DataTable tablaClientesP = new DataTable();
+
+                Conexion.Open();
                 adaptador.Fill(tablaClientesP);
 
                 cmbClientesT.DisplayMember = "NombreCompleto";
@@ -101,7 +105,7 @@ namespace Proyecto
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al cargar la lista de cliwentes: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al cargar la lista de clientes: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -109,36 +113,69 @@ namespace Proyecto
             }
         }
 
+        public void cargarDólar()
+        {
+            string nombreMoneda = "Dólar";
+            string consultaArbitraje = "SELECT ValorCompra, ValorVenta FROM moneda WHERE Nombre = @nombreMoneda";
 
+            using (MySqlConnection conexion = new MySqlConnection("Server=codelabmysqlserver.ddns.net;Database=codelabagencia;User=bdcode;Password=11452020"))
+            {
+                using (MySqlCommand cmd = new MySqlCommand(consultaArbitraje, conexion))
+                {
+                    cmd.Parameters.AddWithValue("@nombreMoneda", nombreMoneda);
+
+                    try
+                    {
+                        conexion.Open();
+                        using (MySqlDataReader reader = cmd.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                decimal valorCompra = reader.GetDecimal(0);
+                                decimal valorVenta = reader.GetDecimal(1);
+
+                                txtArbitrajeC.Text = valorCompra.ToString();
+                                txtArbitrajeV.Text = valorVenta.ToString();
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al cargar la lista de Monedas: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
         public void CargarMonedasT()
         {
             try
             {
-                string consulta = "Select Nombre, ValorCompra, ValorVenta from moneda";
-                MySqlCommand cmd = new MySqlCommand(consulta, Conexion);
-                MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
-                DataTable tablaMonedasT = new DataTable();
-                adaptador.Fill(tablaMonedasT);
-
-
-                cmbMonedasT.DisplayMember = "Nombre";
-                cmbMonedasT.ValueMember = "ValorCompra";
-                cmbMonedasT.DataSource = tablaMonedasT;
-
-
-
-                cmbMonedasT.SelectedIndexChanged += (sender, e) =>
+                string consultaM = "Select Nombre, ValorCompra, ValorVenta from moneda";
+                using (MySqlConnection conexion = new MySqlConnection("Server=codelabmysqlserver.ddns.net;Database=codelabagencia;User=bdcode;Password=11452020"))
                 {
-                    if (cmbMonedasT.SelectedItem != null)
-                    {
+                    MySqlCommand cmd = new MySqlCommand(consultaM, conexion);
+                    MySqlDataAdapter adaptador = new MySqlDataAdapter(cmd);
+                    DataTable tablaMonedasT = new DataTable();
+                    adaptador.Fill(tablaMonedasT);
 
-                        DataRowView selectedRow = (DataRowView)cmbMonedasT.SelectedItem;
+                    cmbMonedasT.DisplayMember = "Nombre";
+                    cmbMonedasT.ValueMember = "ValorCompra";
+                    cmbMonedasT.DataSource = tablaMonedasT;
 
-                        txtMontoCompraT.Text = selectedRow["ValorCompra"].ToString();
+                    cmbMonedasT.SelectedIndexChanged += (sender, e) =>
+                  {
+                      if (cmbMonedasT.SelectedItem != null)
+                      {
 
-                    }
+                          DataRowView selectedRow = (DataRowView)cmbMonedasT.SelectedItem;
 
-                };
+                          txtMontoCompraT.Text = selectedRow["ValorCompra"].ToString();
+                          txtMontoVentaM.Text = selectedRow["ValorVenta"].ToString();
+
+                      }
+
+                  };
+                }
             }
             catch (Exception ex)
             {
@@ -167,6 +204,7 @@ namespace Proyecto
                         DataRowView selectedRow = (DataRowView)cmbMonedaVT.SelectedItem;
 
                         txtMontoVentaT.Text = selectedRow["ValorVenta"].ToString();
+                        txtMontoCompraM.Text = selectedRow["ValorCompra"].ToString();
 
                     }
 
@@ -192,12 +230,16 @@ namespace Proyecto
             {
                 txtMontoCompraT.Enabled = false;
                 txtMontoVentaT.Enabled = false;
+                txtMontoCompraM.Enabled = false;
+                txtMontoVentaM.Enabled = false;
             }
             else if (cmbModoAM.SelectedItem.ToString() == "Manual")
 
             {
                 txtMontoCompraT.Enabled = true;
                 txtMontoVentaT.Enabled = true;
+                txtMontoVentaM.Enabled = true;
+                txtMontoCompraM.Enabled = true;
             }
         }
 
@@ -208,8 +250,20 @@ namespace Proyecto
 
             if (rbCompraT.Checked)
             {
+                pCompra.BackColor = Color.LightSkyBlue;
                 txtMontoCompraT.Enabled = true;
                 txtMontoVentaT.Enabled = false;
+                lblMoneda.Text = "Moneda Compra";
+                cmbMonedaVT.Location = new Point(185, 32);
+                cmbMonedasT.Location = new Point(185, 187);
+                txtMontoVentaT.Location = new Point(185, 90);
+                txtMontoCompraM.Location = new Point(185, 119);
+                txtMontoCompraT.Location = new Point(185, 237);
+                txtMontoVentaM.Location = new Point(185, 266);
+                lblValorTransaccion.Location = new Point(185, 220);
+             
+                rbVentaT.Checked = false;
+
 
                 foreach (DataRowView item in cmbMonedasT.Items)
                 {
@@ -229,6 +283,21 @@ namespace Proyecto
                     }
                 }
             }
+            else if (!rbCompraT.Checked)
+            {
+                Color activeCaptionColor = SystemColors.ActiveCaption;
+                pCompra.BackColor = activeCaptionColor;
+                lblMoneda.Text = "Moneda Venta";
+                
+                rbCompraT.Checked = false;
+                cmbMonedaVT.Location = new Point(185, 187);
+                cmbMonedasT.Location = new Point(185, 32);
+                txtMontoVentaT.Location = new Point(185, 237);
+                txtMontoCompraM.Location = new Point(185, 266);
+                txtMontoCompraT.Location = new Point(185, 90);
+                txtMontoVentaM.Location = new Point(185, 119);
+                lblValorTransaccion.Location = new Point(185, 220);
+            }
         }
 
         private void rbVentaT_CheckedChanged(object sender, EventArgs e)
@@ -237,8 +306,20 @@ namespace Proyecto
 
             if (rbVentaT.Checked)
             {
+                cmbMonedaVT.Location = new Point(185, 187);
+                cmbMonedasT.Location = new Point(185, 32);
+                txtMontoVentaT.Location = new Point(185, 237);
+                txtMontoCompraM.Location = new Point(185, 266);
+                txtMontoCompraT.Location = new Point(185, 90);
+                txtMontoVentaM.Location = new Point(185, 119);
+                lblValorTransaccion.Location = new Point(185, 220);
+                pVenta.BackColor = Color.LightSkyBlue;
+
                 txtMontoCompraT.Enabled = false;
                 txtMontoVentaT.Enabled = true;
+                lblMoneda.Text = "Moneda Venta";
+                rbCompraT.Checked = false;
+
 
                 foreach (DataRowView item in cmbMonedasT.Items)
                 {
@@ -257,6 +338,21 @@ namespace Proyecto
                         break;
                     }
                 }
+            }
+            else if (!rbVentaT.Checked)
+            {
+                Color activeCaptionColor = SystemColors.ActiveCaption;
+                pVenta.BackColor = activeCaptionColor;
+                lblMoneda.Text = "Moneda Compra";
+                cmbMonedaVT.Location = new Point(185, 32);
+                cmbMonedasT.Location = new Point(185, 187);
+                txtMontoVentaT.Location = new Point(185, 90);
+                txtMontoCompraM.Location = new Point(185, 119);
+                txtMontoCompraT.Location = new Point(185, 237);
+                txtMontoVentaM.Location = new Point(185, 266);
+                lblValorTransaccion.Location = new Point(185, 220);
+                rbVentaT.Checked = false;
+
             }
         }
 
@@ -285,7 +381,29 @@ namespace Proyecto
         {
             DataRowView selectedItem = (DataRowView)comboBoxMoneda.SelectedItem;
 
-            if (selectedItem != null)
+            if (rbCompraT.Checked && selectedItem != null)
+            {
+                string nombreMoneda = selectedItem["Nombre"].ToString();
+
+                switch (nombreMoneda)
+                {
+                    case "Dólar":
+                        return " USD";
+                    case "Peso Uruguayo":
+                        return "   $";
+                    case "Peso Argentino":
+                        return " ARS";
+                    case "Euro":
+                        return "   €";
+                    case "DólarEbrou":
+                        return "eUSD";
+                    case "Real":
+                        return "  R$";
+                    default:
+                        return "";
+                }
+            }
+            if (rbVentaT.Checked && selectedItem != null)
             {
                 string nombreMoneda = selectedItem["Nombre"].ToString();
 
@@ -324,8 +442,12 @@ namespace Proyecto
 
                 if (monedaCompraSeleccionada != null && monedaVentaSeleccionada != null)
                 {
-                    double valorCompra = double.Parse(monedaCompraSeleccionada["ValorCompra"].ToString());
-                    double valorVenta = double.Parse(monedaVentaSeleccionada["ValorVenta"].ToString());
+                    double.TryParse(txtArbitrajeC.Text, out double arbitrajeCompra);
+                    double.TryParse(txtArbitrajeV.Text, out double arbitrajeVenta);
+                    double.TryParse(txtMontoVentaM.Text, out double valorVentaC);
+                    double.TryParse(txtMontoCompraM.Text, out double valorCompraV);
+                    double.TryParse(txtMontoCompraT.Text, out double valorCompra);
+                    double.TryParse(txtMontoVentaT.Text, out double valorVenta);
 
 
                     if (rbCompraT.Checked)
@@ -335,342 +457,466 @@ namespace Proyecto
                         double montoPorcentaje = 0.0;
                         double ganancia_C = 0.0;
                         double conversor_C = 0.0;
+                        double montoArbitraje = 0.0;
+                        double comprobar_C = 0.0;
+                        double promedioArbitraje = (arbitrajeCompra + arbitrajeVenta) / 2;
 
                         if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = montoT / valorCompra; // DólarEbrou a Peso Uruguayo
-                            montoPorcentaje = (montoClienteRecibe * 2) / 100;
+
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje); // DólarEbrou a Peso Uruguayo
+                            montoPorcentaje = (montoClienteRecibe * 1.2) / 100;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = montoClienteFinal * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C);
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje);
+                            comprobar_C = Math.Round(comprobar_C, 2);
+
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // DólarEbrou a Peso Argentino
-                            montoPorcentaje = (montoClienteRecibe * 2) / 100;
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje) / valorCompra; // DólarEbrou a Peso Argentino
+                            montoPorcentaje = (montoClienteRecibe * 1.5) / 100;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
 
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // DólarEbrou a Euro
-                            montoPorcentaje = (montoClienteRecibe / 100) * 2;
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT * montoArbitraje); // DólarEbrou a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
+                            conversor_C = (montoClienteFinal / montoArbitraje);
                             ganancia_C = (montoT - conversor_C) * valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // DólarEbrou a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = (montoT * valorVenta) / valorCompra; // DólarEbrou a Real
+                            montoPorcentaje = montoClienteRecibe * 0.07;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C);
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // DólarEbrou a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje); // DólarEbrou a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.018;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
                             ganancia_C = (montoT - conversor_C) * valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a DólarEbrou
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = (montoT * valorVenta); // Peso Uruguayo a DólarEbrou
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta);
-                            ganancia_C = montoT - conversor_C;
+                            conversor_C = (montoClienteFinal);
+                            ganancia_C = (conversor_C - montoT) / valorVenta;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje);
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = (montoT * valorVenta);  // Peso Uruguayo a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta);
-                            ganancia_C = montoT - conversor_C;
+                            conversor_C = (montoClienteFinal);
+                            ganancia_C = (conversor_C - montoT) / valorVenta;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
-                        {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a Euro
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                        { 
+                            montoClienteRecibe = (montoT * valorVenta); // Peso Uruguayo a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.013;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta);
-                            ganancia_C = montoT - conversor_C ;
+                            conversor_C = (montoClienteFinal);
+                            ganancia_C = (conversor_C - montoT) / valorVenta;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = (montoT * valorVenta);  // Peso Uruguayo a Real
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta);
-                            ganancia_C = montoT - conversor_C;
+                            conversor_C = (montoClienteFinal);
+                            ganancia_C = (conversor_C - montoT) / valorVenta;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorVenta;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a Peso Argentino
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = (montoT * valorCompraV);  // Peso Uruguayo a Peso Argentino
+                            montoPorcentaje = montoClienteRecibe * 0.013;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta);
-                            ganancia_C = montoT - conversor_C;
+                            conversor_C = (montoClienteFinal);
+                            ganancia_C = (montoT - conversor_C) * valorCompraV;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Peso Argentino a DólarEbrou
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeCompra / valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje);  // Peso Argentino a DólarEbrou
+                            montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal / montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Peso Argentino a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+
+                            montoArbitraje = arbitrajeCompra / valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje);  // Peso Argentino a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal / montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Peso Argentino a Euro
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeCompra / valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje);  // Peso Argentino a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.016;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal / montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) * valorVenta;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Peso Argentino a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorCompra;  // Peso Argentino a Real
+                            montoPorcentaje = montoClienteRecibe * 0.017;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal / montoArbitraje);
+                            ganancia_C = (conversor_C - montoT) * valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
-                        {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Peso Argentino a Peso Uruguayo
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                        { 
+                            montoArbitraje = (valorCompra + valorVentaC)/ 2;
+                            montoClienteRecibe = (montoT / valorCompra);  // Peso Argentino a Peso Uruguayo
+                            montoPorcentaje = montoClienteRecibe * 0.013;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = montoClienteFinal * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * valorCompra);
+                            ganancia_C = (montoT - conversor_C);
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = (montoT * valorCompra) / valorVenta; // Real a DólarEbrou
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje) * valorCompra;  // Real a DólarEbrou
                             montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (conversor_C - montoT) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = (montoT * valorCompra) / valorVenta; // Real a Dólar
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje) * valorCompra;   // Real a Dólar
                             montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (conversor_C - montoT) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = (montoT * valorCompra) / valorVenta; // Real a Euro
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT * montoArbitraje) * valorCompra;  // Real a Euro
                             montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (conversor_C - montoT) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = (montoT * valorCompra); // Real a Peso Uruguayo
+                            montoClienteRecibe = montoT / valorCompra;  // Real a Peso Uruguayo
                             montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = montoClienteFinal * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje);
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = (montoT * valorCompra) / valorVenta; // Real a Peso Argentino
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Real a Peso Argentino
                             montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C);
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Euro a DólarEbrou
-                            montoPorcentaje = montoClienteRecibe * 0.022;
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT * montoArbitraje);  // Euro a DólarEbrou
+                            montoPorcentaje = montoClienteRecibe * 0.018;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal);
+                            ganancia_C = (montoT - conversor_C) * ((valorVentaC - valorCompraV) * 2);
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Euro a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.022;
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT * montoArbitraje) ;  // Euro a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.018;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / ((valorCompra - valorVenta) *2);
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Euro a Real
-                            montoPorcentaje = montoClienteRecibe * 0.022;
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorCompra;  // Euro a Real
+                            montoPorcentaje = montoClienteRecibe * 0.019;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal);
+                            ganancia_C = (montoT - conversor_C);
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = montoT / valorCompra; // Euro a Peso Uruguayo
-                            montoPorcentaje = montoClienteRecibe * 0.022;
+                            montoClienteRecibe = montoT / valorCompra;  // Euro a Peso Uruguayo
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = montoClienteFinal * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Euro a Peso Argentino
-                            montoPorcentaje = montoClienteRecibe * 0.022;
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje) / valorCompra;  // Euro a Peso Argentino
+                            montoPorcentaje = montoClienteRecibe * 0.018;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Dólar a DólarEbrou
-                            montoClienteRecibe = Math.Round(montoClienteRecibe, 2); montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje) * valorCompra;  // Dólar a DólarEbrou
+                            montoClienteRecibe = Math.Round(montoClienteRecibe, 2);
+                            montoPorcentaje = montoClienteRecibe * 0.018;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (conversor_C - montoT) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Dólar a Peso Uruguayo
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = montoT / valorCompra;  // Dólar a Peso Uruguayo
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = montoClienteFinal * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Dólar a Peso Argentino
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje) * valorCompraV;  // Dólar a Peso Argentino
+                            montoPorcentaje = montoClienteRecibe * 0.013;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C) / valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Dólar a Euro
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeCompra / valorVenta;
+                            montoClienteRecibe = (montoT * montoArbitraje) ;  // Dólar a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
+                            conversor_C = (montoClienteFinal / montoArbitraje);
                             ganancia_C = (montoT - conversor_C) * valorCompra;
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Dólar a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = (montoT * valorVenta) / valorCompra;   // Dólar a Real
+                            montoPorcentaje = montoClienteRecibe * 0.018;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_C = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_C = (montoT - conversor_C) * valorCompra;
+                            conversor_C = (montoClienteFinal * montoArbitraje);
+                            ganancia_C = (montoT - conversor_C);
                             ganancia_C = Math.Round(ganancia_C, 2);
+
+                            comprobar_C = (montoClienteFinal * promedioArbitraje) / valorCompra;
+                            comprobar_C = Math.Round(comprobar_C, 2);
+                        }
+                        else
+                        {
+                            txtClienteRecibe.Text = string.Empty;
                         }
 
                         txtClienteRecibe.Text = montoClienteFinal.ToString();
                         txtGanancia.Text = ganancia_C.ToString();
+                        txtComprobar.Text = comprobar_C.ToString();
                     }
+
                     else if (rbVentaT.Checked)
                     {
                         double montoClienteRecibe = 0.0;
@@ -678,242 +924,266 @@ namespace Proyecto
                         double montoPorcentaje = 0.0;
                         double ganancia_V = 0.0;
                         double conversor_V = 0.0;
+                        double montoArbitraje;
+                        double comprobar_V = 0.0;
+
 
                         if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = montoT / valorCompra; // DólarEbrou a Peso Uruguayo
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = (montoT * valorCompra); // DólarEbrou a Peso Uruguayo
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = montoClienteFinal * valorCompra;
-                            ganancia_V = (montoT - conversor_V);
+                            conversor_V = montoClienteFinal;
+                            ganancia_V = (conversor_V - montoT) / valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // DólarEbrou a Peso Argentino
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta; // DólarEbrou a Peso Argentino
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                             conversor_V = (montoClienteFinal / montoArbitraje);
+                            ganancia_V = (conversor_V - montoT) * valorVenta;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // DólarEbrou a Euro
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta; // DólarEbrou a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorCompra);
+                            ganancia_V = (montoT - conversor_V);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // DólarEbrou a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) ; // DólarEbrou a Real
+                            montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorCompra) ;
+                            ganancia_V = (montoT - conversor_V);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "DólarEbrou" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // DólarEbrou a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta; // DólarEbrou a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.016;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorCompra);
+                            ganancia_V = (montoT - conversor_V) ;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a DólarEbrou
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Peso Uruguayo a DólarEbrou
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) / valorVenta;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Peso Uruguayo a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) / valorVenta;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = montoT * valorVenta; ; // Peso Uruguayo a Euro
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Peso Uruguayo a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) / valorVenta;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            montoArbitraje = valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Peso Uruguayo a Real
+                            montoPorcentaje = montoClienteRecibe * 0.015;
+                            montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) / valorVenta;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Uruguayo" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = montoT * valorVenta; // Peso Uruguayo a Peso Argentino
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = montoT / valorVenta; // Peso Uruguayo a Peso Argentino
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = montoClienteFinal * valorVenta;
+                            ganancia_V = (montoT - conversor_V);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta;// Peso Argentino a Peso Uruguayo
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoClienteRecibe = (montoT * valorCompra) ; // Peso Argentino a Peso Uruguayo
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V);
+                            conversor_V = montoClienteFinal;
+                            ganancia_V = (montoT - conversor_V) * valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Peso Argentino a DólarEbrou
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Peso Argentino a DólarEbrou
+                            montoPorcentaje = montoClienteRecibe * 0.013;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) * valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; ; // Peso Argentino a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Peso Argentino a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.013;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) * valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Peso Argentino a Euro
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Peso Argentino a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) * valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Peso Argentino" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Peso Argentino a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje) * valorVenta; // Peso Argentino a Real
+                            montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorVenta);
+                            ganancia_V = (montoT - conversor_V) * valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = (montoT * valorVenta); // Real a Peso Uruguayo
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje); // Real a Peso Uruguayo
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V);
+                            conversor_V = montoClienteFinal / valorCompra;
+                            ganancia_V = (montoT - conversor_V) ;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Real a Peso Argentino
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta; // Real a Peso Argentino
+                            montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal * valorVenta);
+                            ganancia_V = (conversor_V - montoT) / (valorCompra / valorVenta);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Real a DólarEbrou
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje) * valorCompra;  // Real a DólarEbrou
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) / valorCompra ;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Real a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorVenta;
+                            montoClienteRecibe = (montoT / montoArbitraje) * valorCompra;  // Real a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) /valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Real" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; ; // Real a Euro
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta;// Real a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.015;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
                             conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            ganancia_V = (montoT - conversor_V) /valorCompra ;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta;  // Euro a Peso Uruguayo
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) ;  // Euro a Peso Uruguayo
+                            montoPorcentaje = montoClienteRecibe * 0.013;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V);
+                            conversor_V = montoClienteFinal;
+                            ganancia_V = (conversor_V - montoT) / valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Euro a DólarEbrou
-                            montoPorcentaje = montoClienteRecibe * 0.022;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Euro a DólarEbrou
+                            montoPorcentaje = montoClienteRecibe * 0.017;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
@@ -923,8 +1193,9 @@ namespace Proyecto
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "Dólar")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Euro a Dólar
-                            montoPorcentaje = montoClienteRecibe * 0.022;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje); // Euro a Dólar
+                            montoPorcentaje = montoClienteRecibe * 0.017;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
@@ -934,84 +1205,93 @@ namespace Proyecto
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Euro a Peso Argentino
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta; // Euro a Peso Argentino
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorCompra);
+                            ganancia_V = (montoT - conversor_V) * (-valorVenta);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Euro" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Euro a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT / montoArbitraje) * valorVenta; // Euro a Real
+                            montoPorcentaje = montoClienteRecibe * 0.018;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorCompra);
+                            ganancia_V = (montoT - conversor_V);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "DólarEbrou")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Dólar a DólarEbrou
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta; // Dólar a DólarEbrou
+                            montoPorcentaje = montoClienteRecibe * 0.018;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorVenta);
+                            ganancia_V = (montoT - conversor_V);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Uruguayo")
                         {
-                            montoClienteRecibe = montoT / valorCompra; // Dólar a Peso Uruguayo
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje); // Dólar a Peso Uruguayo
+                            montoPorcentaje = montoClienteRecibe * 0.012;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = montoClienteFinal / valorVenta;
-                            ganancia_V = (montoT - conversor_V);
+                            conversor_V = montoClienteFinal;
+                            ganancia_V = (conversor_V - montoT) / valorCompra;
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "Peso Argentino")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Dólar a Peso Argentino
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta; // Dólar a Peso Argentino
+                            montoPorcentaje = montoClienteRecibe * 0.013;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorCompra);
+                            ganancia_V = (montoT - conversor_V) *(-valorVenta);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "Euro")
                         {
-                            montoClienteRecibe = (montoT / valorCompra) * valorVenta; // Dólar a Euro
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) / valorVenta; // Dólar a Euro
+                            montoPorcentaje = montoClienteRecibe * 0.014;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorCompra);
+                            ganancia_V = (montoT - conversor_V);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
                         else if (monedaCompraSeleccionada["Nombre"].ToString() == "Dólar" && monedaVentaSeleccionada["Nombre"].ToString() == "Real")
                         {
-                            montoClienteRecibe = (montoT / valorVenta) * valorCompra; // Dólar a Real
-                            montoPorcentaje = montoClienteRecibe * 0.02;
+                            montoArbitraje = arbitrajeVenta / valorCompra;
+                            montoClienteRecibe = (montoT * montoArbitraje) * valorVenta; // Dólar a Real
+                            montoPorcentaje = montoClienteRecibe * 0.016;
                             montoClienteFinal = montoClienteRecibe - montoPorcentaje;
                             montoClienteFinal = Math.Round(montoClienteFinal, 2);
 
-                            conversor_V = (montoClienteFinal / valorVenta) * valorCompra;
-                            ganancia_V = (montoT - conversor_V) * valorVenta;
+                            conversor_V = (montoClienteFinal / valorCompra);
+                            ganancia_V = (montoT - conversor_V);
                             ganancia_V = Math.Round(ganancia_V, 2);
                         }
 
                         txtClienteRecibe.Text = montoClienteFinal.ToString();
                         txtGanancia.Text = ganancia_V.ToString();
+                        txtComprobar.Text = comprobar_V.ToString();
+                       
                     }
                 }
                 else
@@ -1019,6 +1299,10 @@ namespace Proyecto
                     txtClienteRecibe.Text = string.Empty;
                 }
             }
+        }
+
+        private void txtClienteRecibe_TextChanged(object sender, EventArgs e)
+        {
         }
 
         private void btnIngresarT_Click(object sender, EventArgs e)
@@ -1044,12 +1328,11 @@ namespace Proyecto
                 {
                     command.CommandText = "INSERT INTO transacción (Moneda_C, Moneda_V, Tipo, Monto_C, Monto_V, Cliente, CargoUsuario) " +
                                           "VALUES (@Moneda_C, @Moneda_V, @Tipo, @Monto_C, @Monto_V, @Cliente, @CargoUsuario)";
-
                     command.Parameters.AddWithValue("@Moneda_C", cmbMonedasT.SelectedValue.ToString());
                     command.Parameters.AddWithValue("@Moneda_V", cmbMonedaVT.SelectedValue.ToString());
                     command.Parameters.AddWithValue("@Tipo", rbCompraT.Checked ? "Compra" : "Venta");
-                    command.Parameters.AddWithValue("@Monto_C", rbCompraT.Checked ? Convert.ToDouble(txtMontoT.Text) : Convert.ToDouble(txtClienteRecibe.Text));
-                    command.Parameters.AddWithValue("@Monto_V", rbVentaT.Checked ? Convert.ToDouble(txtMontoT.Text) : Convert.ToDouble(txtClienteRecibe.Text));
+                    command.Parameters.AddWithValue("@Monto_C", rbCompraT.Checked ? Convert.ToDouble(txtMontoT.Text) : 0);
+                    command.Parameters.AddWithValue("@Monto_V", rbVentaT.Checked ? Convert.ToDouble(txtMontoT.Text) : 0);
                     command.Parameters.AddWithValue("@Cliente", idCliente);
                     command.Parameters.AddWithValue("@CargoUsuario", cargoUsuario);
 
@@ -1058,19 +1341,10 @@ namespace Proyecto
                         int rowsAffected = command.ExecuteNonQuery();
                         if (rowsAffected > 0)
                         {
-                            double montoGananciaCompra = 0;
-                            double montoGananciaVenta = 0;
+                            decimal montoGanancia = Convert.ToDecimal(txtGanancia.Text);
+                            string tipoOperacion = rbCompraT.Checked ? "Compra" : "Venta";
 
-                            if (rbCompraT.Checked)
-                            {
-                                montoGananciaCompra = Convert.ToDouble(txtGanancia.Text);
-                            }
-                            else if (rbVentaT.Checked)
-                            {
-                                montoGananciaVenta = Convert.ToDouble(txtGanancia.Text);
-                            }
-
-                            ActualizarGanancias(montoGananciaCompra, montoGananciaVenta);
+                            ActualizarGanancias(montoGanancia, tipoOperacion);
                             MessageBox.Show("Los datos se ingresaron correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
@@ -1086,7 +1360,7 @@ namespace Proyecto
             }
         }
 
-        private void ActualizarGanancias(double montoGananciaCompra, double montoGananciaVenta)
+        private void ActualizarGanancias(decimal montoGanancia, string tipoOperacion)
         {
             using (MySqlConnection connection = new MySqlConnection("Server=codelabmysqlserver.ddns.net;Database=codelabagencia;User=bdcode;Password=11452020"))
             {
@@ -1094,11 +1368,10 @@ namespace Proyecto
 
                 using (MySqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "INSERT INTO ganancia (GananciaCompra, GananciaVenta, Fecha_Ingreso) VALUES (@MontoGananciaCompra, @MontoGananciaVenta, @FechaGanancia)";
+                    command.CommandText = "INSERT INTO Ganancia (Fecha, TipoOperacion, MontoGanancia) VALUES (CURRENT_TIMESTAMP, @TipoOperacion, @MontoGanancia)";
 
-                    command.Parameters.AddWithValue("@MontoGananciaCompra", montoGananciaCompra);
-                    command.Parameters.AddWithValue("@MontoGananciaVenta", montoGananciaVenta);
-                    command.Parameters.AddWithValue("@FechaGanancia", DateTime.Now);
+                    command.Parameters.AddWithValue("@TipoOperacion", tipoOperacion);
+                    command.Parameters.AddWithValue("@MontoGanancia", montoGanancia);
 
                     try
                     {
@@ -1119,7 +1392,6 @@ namespace Proyecto
                 }
             }
         }
-
 
 
 
@@ -1231,6 +1503,7 @@ namespace Proyecto
 
 
 
+
         private void ActualizarMonedas()
         {
             string connectionString = "Server=codelabmysqlserver.ddns.net;Database=codelabagencia;User=bdcode;Password=11452020";
@@ -1315,7 +1588,7 @@ namespace Proyecto
                 }
             }
         }
-    
+
 
         private void lblCotizacionWeb_MouseHover(object sender, EventArgs e)
         {
@@ -1324,9 +1597,10 @@ namespace Proyecto
 
         private void lblCotizacionWeb_MouseLeave(object sender, EventArgs e)
         {
-            lblCotizacionWeb.ForeColor = Color.DarkBlue; 
+            lblCotizacionWeb.ForeColor = Color.DarkBlue;
         }
 
+        
     }
 }
 

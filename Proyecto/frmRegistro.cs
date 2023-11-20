@@ -1,13 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 
@@ -16,7 +12,7 @@ namespace Proyecto
     public partial class frmRegistro : Form
     {
         private Conexion miConexion;
-       
+
 
         public frmRegistro()
         {
@@ -63,7 +59,7 @@ namespace Proyecto
 
             pContraseña.MouseEnter += Panel_MouseEnter;
             pContraseña.MouseLeave += Panel_MouseLeave;
-      
+
         }
 
 
@@ -87,11 +83,11 @@ namespace Proyecto
 
             Button bt = sender as Button;
 
-            foreach (Control ctr in pPrincipal.Controls)  
+            foreach (Control ctr in pPrincipal.Controls)
             {
-                if (ctr is Button)   
+                if (ctr is Button)
                 {
-                    bt.BackColor = Color.White;  
+                    bt.BackColor = Color.White;
                 }
             }
         }
@@ -123,7 +119,7 @@ namespace Proyecto
             }
             else
             {
-                return; 
+                return;
             }
 
             panel.BackColor = Color.Black;
@@ -155,7 +151,7 @@ namespace Proyecto
             }
             else
             {
-                return; 
+                return;
             }
 
             if (!(sender as TextBox).Focused)
@@ -190,10 +186,10 @@ namespace Proyecto
             }
             else
             {
-                return; 
+                return;
             }
 
-            panel.BackColor = Color.Black; 
+            panel.BackColor = Color.Black;
         }
 
         private void TextBox_Leave(object sender, EventArgs e)
@@ -222,7 +218,7 @@ namespace Proyecto
             }
             else
             {
-                return; 
+                return;
             }
 
             panel.BackColor = Color.Silver;
@@ -286,13 +282,13 @@ namespace Proyecto
             }
             else
             {
-                return; 
-            }  
-                panel.BackColor = Color.Silver;
-            
+                return;
+            }
+            panel.BackColor = Color.Silver;
+
         }
 
-     
+
 
 
 
@@ -444,22 +440,6 @@ namespace Proyecto
             }
         }
 
-        
 
-        private void pPrincipal_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

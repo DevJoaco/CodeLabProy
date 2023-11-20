@@ -37,16 +37,17 @@
             this.panel8 = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
-            this.btnSubirFoto = new System.Windows.Forms.Button();
             this.cmbClientes2 = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.panel11 = new System.Windows.Forms.Panel();
             this.btnEliminarCl = new System.Windows.Forms.Button();
             this.btnEliminarC = new System.Windows.Forms.Button();
             this.panel9 = new System.Windows.Forms.Panel();
             this.btnCotizaciones = new System.Windows.Forms.Button();
             this.panel10 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label8 = new System.Windows.Forms.Label();
+            this.cmbInforme = new System.Windows.Forms.ComboBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.panel17 = new System.Windows.Forms.Panel();
@@ -72,9 +73,9 @@
             // btnVolver
             // 
             this.btnVolver.BackColor = System.Drawing.SystemColors.ActiveCaption;
-            this.btnVolver.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.btnVolver.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic);
             this.btnVolver.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnVolver.Location = new System.Drawing.Point(685, 28);
+            this.btnVolver.Location = new System.Drawing.Point(675, 29);
             this.btnVolver.Name = "btnVolver";
             this.btnVolver.Size = new System.Drawing.Size(106, 43);
             this.btnVolver.TabIndex = 0;
@@ -91,14 +92,14 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(802, 94);
             this.panel1.TabIndex = 3;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            
             // 
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(-37, -31);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBox3.Location = new System.Drawing.Point(-30, -31);
+            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(202, 150);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -125,15 +126,12 @@
             // panel8
             // 
             this.panel8.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel8.Controls.Add(this.panel9);
             this.panel8.Controls.Add(this.label5);
             this.panel8.Controls.Add(this.label4);
-            this.panel8.Controls.Add(this.btnSubirFoto);
             this.panel8.Controls.Add(this.cmbClientes2);
-            this.panel8.Controls.Add(this.label2);
-            this.panel8.Controls.Add(this.panel11);
             this.panel8.Controls.Add(this.btnEliminarCl);
             this.panel8.Controls.Add(this.btnEliminarC);
-            this.panel8.Controls.Add(this.panel9);
             this.panel8.Location = new System.Drawing.Point(545, 115);
             this.panel8.Name = "panel8";
             this.panel8.Size = new System.Drawing.Size(257, 342);
@@ -143,7 +141,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Yi Baiti", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(33, 231);
+            this.label5.Location = new System.Drawing.Point(33, 205);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(178, 21);
             this.label5.TabIndex = 17;
@@ -153,64 +151,29 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Yi Baiti", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(33, 96);
+            this.label4.Location = new System.Drawing.Point(33, 15);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(192, 21);
             this.label4.TabIndex = 16;
             this.label4.Text = "ELIMINAR CLIENTES";
             // 
-            // btnSubirFoto
-            // 
-            this.btnSubirFoto.BackColor = System.Drawing.Color.SteelBlue;
-            this.btnSubirFoto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnSubirFoto.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
-            this.btnSubirFoto.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.btnSubirFoto.Image = ((System.Drawing.Image)(resources.GetObject("btnSubirFoto.Image")));
-            this.btnSubirFoto.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSubirFoto.Location = new System.Drawing.Point(16, 27);
-            this.btnSubirFoto.Name = "btnSubirFoto";
-            this.btnSubirFoto.Size = new System.Drawing.Size(230, 39);
-            this.btnSubirFoto.TabIndex = 15;
-            this.btnSubirFoto.Text = "SELECCIONAR";
-            this.btnSubirFoto.UseVisualStyleBackColor = false;
-            this.btnSubirFoto.Click += new System.EventHandler(this.btnSubirFoto_Click);
-            // 
             // cmbClientes2
             // 
             this.cmbClientes2.FormattingEnabled = true;
-            this.cmbClientes2.Location = new System.Drawing.Point(66, 120);
+            this.cmbClientes2.Location = new System.Drawing.Point(71, 50);
             this.cmbClientes2.Name = "cmbClientes2";
             this.cmbClientes2.Size = new System.Drawing.Size(121, 21);
             this.cmbClientes2.TabIndex = 10;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Yi Baiti", 15.75F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(48, 3);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(166, 21);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "FOTO DE PERFIL";
-            // 
-            // panel11
-            // 
-            this.panel11.BackColor = System.Drawing.SystemColors.InfoText;
-            this.panel11.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.panel11.Location = new System.Drawing.Point(-8, 69);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(266, 25);
-            this.panel11.TabIndex = 7;
-            // 
             // btnEliminarCl
             // 
-            this.btnEliminarCl.BackColor = System.Drawing.Color.SteelBlue;
+            this.btnEliminarCl.BackColor = System.Drawing.Color.LightSteelBlue;
             this.btnEliminarCl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEliminarCl.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.btnEliminarCl.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminarCl.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnEliminarCl.Image = ((System.Drawing.Image)(resources.GetObject("btnEliminarCl.Image")));
             this.btnEliminarCl.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnEliminarCl.Location = new System.Drawing.Point(27, 147);
+            this.btnEliminarCl.Location = new System.Drawing.Point(27, 90);
             this.btnEliminarCl.Name = "btnEliminarCl";
             this.btnEliminarCl.Size = new System.Drawing.Size(209, 48);
             this.btnEliminarCl.TabIndex = 8;
@@ -220,9 +183,9 @@
             // 
             // btnEliminarC
             // 
-            this.btnEliminarC.BackColor = System.Drawing.Color.SteelBlue;
+            this.btnEliminarC.BackColor = System.Drawing.Color.LightSteelBlue;
             this.btnEliminarC.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnEliminarC.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.btnEliminarC.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnEliminarC.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnEliminarC.Image = ((System.Drawing.Image)(resources.GetObject("btnEliminarC.Image")));
             this.btnEliminarC.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -238,17 +201,17 @@
             // 
             this.panel9.BackColor = System.Drawing.SystemColors.InfoText;
             this.panel9.ForeColor = System.Drawing.SystemColors.ControlDark;
-            this.panel9.Location = new System.Drawing.Point(-23, 201);
+            this.panel9.Location = new System.Drawing.Point(0, 147);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(280, 25);
+            this.panel9.Size = new System.Drawing.Size(257, 25);
             this.panel9.TabIndex = 7;
-            this.panel9.Paint += new System.Windows.Forms.PaintEventHandler(this.panel9_Paint);
+            
             // 
             // btnCotizaciones
             // 
-            this.btnCotizaciones.BackColor = System.Drawing.Color.SteelBlue;
+            this.btnCotizaciones.BackColor = System.Drawing.Color.LightSteelBlue;
             this.btnCotizaciones.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnCotizaciones.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.btnCotizaciones.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCotizaciones.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.btnCotizaciones.Image = ((System.Drawing.Image)(resources.GetObject("btnCotizaciones.Image")));
             this.btnCotizaciones.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
@@ -272,6 +235,10 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.panel2.Controls.Add(this.label8);
+            this.panel2.Controls.Add(this.cmbInforme);
+            this.panel2.Controls.Add(this.button2);
+            this.panel2.Controls.Add(this.label6);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.btnCotizaciones);
             this.panel2.Controls.Add(this.label1);
@@ -279,7 +246,51 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(252, 348);
             this.panel2.TabIndex = 5;
-            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
+            
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(83, 182);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(84, 13);
+            this.label8.TabIndex = 17;
+            this.label8.Text = "Elija una Opcion";
+          
+            // 
+            // cmbInforme
+            // 
+            this.cmbInforme.FormattingEnabled = true;
+            this.cmbInforme.Location = new System.Drawing.Point(37, 213);
+            this.cmbInforme.Name = "cmbInforme";
+            this.cmbInforme.Size = new System.Drawing.Size(179, 21);
+            this.cmbInforme.TabIndex = 16;
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.button2.Image = ((System.Drawing.Image)(resources.GetObject("button2.Image")));
+            this.button2.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.button2.Location = new System.Drawing.Point(27, 264);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(202, 47);
+            this.button2.TabIndex = 15;
+            this.button2.Text = "Generar";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(33, 153);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(167, 19);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "GENERAR INFORME";
             // 
             // label3
             // 
@@ -299,7 +310,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(0, 16);
             this.label1.TabIndex = 4;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            
             // 
             // panel17
             // 
@@ -320,9 +331,9 @@
             // 
             // button1
             // 
-            this.button1.BackColor = System.Drawing.Color.SteelBlue;
+            this.button1.BackColor = System.Drawing.Color.LightSteelBlue;
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button1.Font = new System.Drawing.Font("Microsoft Yi Baiti", 14.25F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
             this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -337,10 +348,10 @@
             // rbDireccion
             // 
             this.rbDireccion.AutoSize = true;
-            this.rbDireccion.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.rbDireccion.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic);
             this.rbDireccion.Location = new System.Drawing.Point(33, 175);
             this.rbDireccion.Name = "rbDireccion";
-            this.rbDireccion.Size = new System.Drawing.Size(89, 19);
+            this.rbDireccion.Size = new System.Drawing.Size(82, 20);
             this.rbDireccion.TabIndex = 55;
             this.rbDireccion.TabStop = true;
             this.rbDireccion.Text = "Direccion";
@@ -349,10 +360,10 @@
             // rbCelular
             // 
             this.rbCelular.AutoSize = true;
-            this.rbCelular.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.rbCelular.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic);
             this.rbCelular.Location = new System.Drawing.Point(33, 152);
             this.rbCelular.Name = "rbCelular";
-            this.rbCelular.Size = new System.Drawing.Size(73, 19);
+            this.rbCelular.Size = new System.Drawing.Size(67, 20);
             this.rbCelular.TabIndex = 54;
             this.rbCelular.TabStop = true;
             this.rbCelular.Text = "Celular";
@@ -361,10 +372,10 @@
             // rbCedula
             // 
             this.rbCedula.AutoSize = true;
-            this.rbCedula.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.rbCedula.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic);
             this.rbCedula.Location = new System.Drawing.Point(33, 129);
             this.rbCedula.Name = "rbCedula";
-            this.rbCedula.Size = new System.Drawing.Size(135, 19);
+            this.rbCedula.Size = new System.Drawing.Size(127, 20);
             this.rbCedula.TabIndex = 53;
             this.rbCedula.TabStop = true;
             this.rbCedula.Text = "Cedula Identidad";
@@ -373,10 +384,10 @@
             // rbApellido
             // 
             this.rbApellido.AutoSize = true;
-            this.rbApellido.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.rbApellido.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic);
             this.rbApellido.Location = new System.Drawing.Point(33, 105);
             this.rbApellido.Name = "rbApellido";
-            this.rbApellido.Size = new System.Drawing.Size(78, 19);
+            this.rbApellido.Size = new System.Drawing.Size(75, 20);
             this.rbApellido.TabIndex = 52;
             this.rbApellido.TabStop = true;
             this.rbApellido.Text = "Apellido";
@@ -385,10 +396,10 @@
             // rbNombre
             // 
             this.rbNombre.AutoSize = true;
-            this.rbNombre.Font = new System.Drawing.Font("Arial Rounded MT Bold", 9.75F, System.Drawing.FontStyle.Italic);
+            this.rbNombre.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Italic);
             this.rbNombre.Location = new System.Drawing.Point(33, 82);
             this.rbNombre.Name = "rbNombre";
-            this.rbNombre.Size = new System.Drawing.Size(77, 19);
+            this.rbNombre.Size = new System.Drawing.Size(74, 20);
             this.rbNombre.TabIndex = 51;
             this.rbNombre.TabStop = true;
             this.rbNombre.Text = "Nombre";
@@ -478,7 +489,6 @@
         private System.Windows.Forms.Button btnEliminarC;
         private System.Windows.Forms.Panel panel10;
         private System.Windows.Forms.Button btnEliminarCl;
-        private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.ComboBox cmbClientes2;
         private System.Windows.Forms.Panel panel17;
         private System.Windows.Forms.Button button1;
@@ -494,11 +504,13 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button btnSubirFoto;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox cmbInforme;
     }
 }

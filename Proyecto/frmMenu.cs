@@ -1,12 +1,9 @@
 ﻿using MySql.Data.MySqlClient;
-using Proyecto.Properties;
 using System;
 using System.Data;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace Proyecto
@@ -15,14 +12,13 @@ namespace Proyecto
     {
         private MySqlConnection conexion;
         Form frmLogin;
-
+        internal static string usuario;
+        string nombreUsuario;
         public frmMenu()
         {
             InitializeComponent();
             conexion = new MySqlConnection("Server=codelabmysqlserver.ddns.net;Database=codelabagencia;user=bdcode;password=11452020;");
             this.MouseDown += Form3_MouseDown;
-            this.MouseMove += Form3_MouseMove;
-            this.MouseUp += Form3_MouseUp;
             this.Load += Form3_Load;
             frmLogin = new frmLogin();
             Timer timer = new Timer();
@@ -57,12 +53,16 @@ namespace Proyecto
             }
 
             CargaFOTOPERFIL(usuario);
+
+
+
         }
 
         private void Form3_Load(object sender, EventArgs e)
         {
             string usuario = Sesion.NombreUsuario;
             string cargo = CargarUSER(usuario);
+
 
             if (cargo != "Jefe")
             {
@@ -75,8 +75,8 @@ namespace Proyecto
 
 
                 btnMovimientos.ForeColor = Color.DarkRed;
-               btnMetricas.ForeColor = Color.DarkRed;
-                
+                btnMetricas.ForeColor = Color.DarkRed;
+
                 btnMovimientos.Enabled = false;
                 btnMetricas.Enabled = false;
             }
@@ -162,7 +162,7 @@ namespace Proyecto
             }
         }
 
-        private string CargarGMAIL(string nombreUsuario) 
+        private string CargarGMAIL(string nombreUsuario)
         {
             string gmail = null;
 
@@ -201,7 +201,7 @@ namespace Proyecto
 
             return gmail;
         }
-        private string CargarUSER(string nombreUsuario) 
+        private string CargarUSER(string nombreUsuario)
         {
             string cargo = null;
 
@@ -239,7 +239,7 @@ namespace Proyecto
         }
 
 
-        
+
 
         private void CargarClientes()
         {
@@ -281,7 +281,6 @@ namespace Proyecto
             public static string Apellido { get; set; }
             public static string Gmail { get; set; }
             public static string CargoUsuario { get; set; }
-            
         }
 
 
@@ -339,7 +338,7 @@ namespace Proyecto
         private void EventoINFOMENU()
         {
             int prestamosActivos = 0;
-            int transaccionesTotales = 0; 
+            int transaccionesTotales = 0;
             int clientesActivos = 0;
 
             try
@@ -347,7 +346,7 @@ namespace Proyecto
                 string consultaPrestamosActivos = "SELECT COUNT(*) FROM préstamo WHERE DadoDeBaja = 0 AND Fecha_Vencimiento >= CURDATE()";
                 MySqlCommand cmdPrestamosActivos = new MySqlCommand(consultaPrestamosActivos, conexion);
 
-                string consultaTransaccionesTotales = "SELECT COUNT(*) FROM devolucion"; 
+                string consultaTransaccionesTotales = "SELECT COUNT(*) FROM devolucion";
                 MySqlCommand cmdTransaccionesTotales = new MySqlCommand(consultaTransaccionesTotales, conexion);
 
                 string consultaClientesActivos = "SELECT COUNT(*) FROM cliente WHERE DadoDeBaja = 0";
@@ -356,7 +355,7 @@ namespace Proyecto
                 conexion.Open();
 
                 prestamosActivos = Convert.ToInt32(cmdPrestamosActivos.ExecuteScalar());
-                transaccionesTotales = Convert.ToInt32(cmdTransaccionesTotales.ExecuteScalar()); 
+                transaccionesTotales = Convert.ToInt32(cmdTransaccionesTotales.ExecuteScalar());
                 clientesActivos = Convert.ToInt32(cmdClientesActivos.ExecuteScalar());
             }
             catch (Exception ex)
@@ -369,9 +368,10 @@ namespace Proyecto
             }
 
             lblPrestamosA.Text = "Prestamos Activos: " + prestamosActivos;
-            lblTranSac.Text = "Transacciones Totales: " + transaccionesTotales; 
+            lblTranSac.Text = "Transacciones Totales: " + transaccionesTotales;
             lblClientsss.Text = "Clientes Activos: " + clientesActivos;
         }
+
         private void CargaFOTOPERFIL(string nombreDeUsuario)
         {
             try
@@ -381,7 +381,7 @@ namespace Proyecto
                 {
                     connection.Open();
 
-                    // esta consulta es para obtener la imagen de perfil del usuario actual
+                    // Consulta para obtener la imagen de perfil del usuario actual
                     string consulta = "SELECT ImagenPerfil FROM usuario WHERE U_Usuario = @NombreDeUsuario";
                     using (MySqlCommand cmd = new MySqlCommand(consulta, connection))
                     {
@@ -390,9 +390,9 @@ namespace Proyecto
                         // Lee la imagen desde la base de datos
                         object imagenBytes = cmd.ExecuteScalar();
 
-                        if (imagenBytes != DBNull.Value)
+                        if (imagenBytes != null && imagenBytes != DBNull.Value)
                         {
-                            // pasa los bytes de la imagen en un objeto Image
+                            // Pasa los bytes de la imagen en un objeto Image
                             byte[] bytesImagen = (byte[])imagenBytes;
                             using (MemoryStream ms = new MemoryStream(bytesImagen))
                             {
@@ -402,8 +402,7 @@ namespace Proyecto
                         }
                         else
                         {
-                            
-                            PictureFOTOPERFIL.Image = null; 
+                            PictureFOTOPERFIL.Image = null;
                         }
                     }
                 }
@@ -417,6 +416,62 @@ namespace Proyecto
                 MessageBox.Show("Error general: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Archivos de imagen|*.png;*.jpg;*.jpeg;*.gif";
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string rutaDeLaImagen = openFileDialog.FileName;
+                    string nombreDeUsuario = ObtenerNombreDeUsuarioDeLaSesion();
+
+                    byte[] imagenEnBytes = File.ReadAllBytes(rutaDeLaImagen);
+
+                    string connectionString = "Server=codelabmysqlserver.ddns.net;Database=codelabagencia;user=bdcode;password=11452020;";
+                    using (MySqlConnection connection = new MySqlConnection(connectionString))
+                    {
+                        connection.Open();
+
+                       
+                        string consulta = "UPDATE usuario SET ImagenPerfil = @FotoPerfil WHERE U_Usuario = @NombreDeUsuario";
+                        using (MySqlCommand cmd = new MySqlCommand(consulta, connection))
+                        {
+                            cmd.Parameters.Add("@FotoPerfil", MySqlDbType.Blob).Value = imagenEnBytes;
+                            cmd.Parameters.Add("@NombreDeUsuario", MySqlDbType.VarChar).Value = nombreDeUsuario;
+
+                            int filasAfectadas = cmd.ExecuteNonQuery();
+
+                            if (filasAfectadas > 0)
+                            {
+                                MessageBox.Show("Imagen de perfil actualizada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                CargaFOTOPERFIL(nombreDeUsuario);
+                            }
+                            else
+                            {
+                                MessageBox.Show("No se pudo actualizar la imagen de perfil.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (MySqlException ex)
+            {
+                MessageBox.Show("Error de MySQL: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error general: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string ObtenerNombreDeUsuarioDeLaSesion()
+        {
+            return Sesion.NombreUsuario;
+        }
+
 
 
 
@@ -432,7 +487,7 @@ namespace Proyecto
             if (string.IsNullOrEmpty(nombre) || string.IsNullOrEmpty(apellido) || string.IsNullOrEmpty(cedula) || string.IsNullOrEmpty(celular) || string.IsNullOrEmpty(direccion))
             {
                 MessageBox.Show("Por favor, complete todos los campos antes de enviar los datos.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return; 
+                return;
             }
 
             try
@@ -495,7 +550,7 @@ namespace Proyecto
             this.Close();
             FormMovimientos.Show();
         }
-      
+
 
         private void btnBuscarCL_Click(object sender, EventArgs e)
         {
@@ -564,46 +619,10 @@ namespace Proyecto
         }
 
 
-        private void btnCLEAR_Click(object sender, EventArgs e)
-        {
-            CargarClientes();
-        }
-
-        private void Form3_MouseMove(object sender, MouseEventArgs e)
-        {
-
-        }
-
-        private void Form3_MouseUp(object sender, MouseEventArgs e)
-        {
-
-        }
-        private void label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void panel12_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void dgvClientess_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-        private void panel17_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-    
        
+
+
+
 
         private void PictureFOTOPERFIL_Click(object sender, EventArgs e)
         {
@@ -679,10 +698,10 @@ namespace Proyecto
             }
         }
 
-
-        }
     }
 
-    
+}
+
+
 
 

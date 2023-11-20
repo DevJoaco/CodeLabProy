@@ -1,11 +1,9 @@
-﻿using System;
-using System.Windows.Forms;
+﻿using MySql.Data.MySqlClient;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Edge;
-using MySql.Data.MySqlClient;
-using SeleniumExtras.WaitHelpers;
+using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Windows.Forms;
 
 namespace Proyecto
 {
@@ -13,7 +11,7 @@ namespace Proyecto
     {
 
         Form frmMenuCB = new frmMenu();
-        
+
         string CotizacionDolarCompra = "0.00";
         string CotizacionDolarVenta = "0.00";
         string CotizacionDolarEbrouCompra = "0.00";
@@ -32,9 +30,9 @@ namespace Proyecto
 
         private void frmCotizacionesBrou_Load(object sender, EventArgs e)
         {
-            
-        }   
-        
+
+        }
+
         private void btnExtraerBrou_Click(object sender, EventArgs e)
         {
             var edgeDriveService = EdgeDriverService.CreateDefaultService();
@@ -63,7 +61,7 @@ namespace Proyecto
 
                 CotizacionRealCompra = elementosCotizaciones[20].Text;
                 CotizacionRealVenta = elementosCotizaciones[21].Text;
-            
+
             }
             finally
             {
@@ -145,7 +143,7 @@ namespace Proyecto
     }
     public class Moneda
     {
-        public string NombreMoneda { get; set; }    
+        public string NombreMoneda { get; set; }
         public double ValorCompra { get; set; }
         public double ValorVenta { get; set; }
     }

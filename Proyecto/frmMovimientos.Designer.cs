@@ -163,7 +163,7 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(1045, 71);
             this.panel3.TabIndex = 15;
-            this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
+            
             // 
             // pictureBox3
             // 
@@ -212,7 +212,7 @@
             this.dgvMovimientos.RowTemplate.Height = 24;
             this.dgvMovimientos.Size = new System.Drawing.Size(712, 260);
             this.dgvMovimientos.TabIndex = 20;
-            this.dgvMovimientos.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMovimientos_CellContentClick);
+            
             // 
             // label7
             // 

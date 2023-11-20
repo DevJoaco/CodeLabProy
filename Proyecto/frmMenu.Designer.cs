@@ -50,10 +50,9 @@ namespace Proyecto
             this.panel9 = new System.Windows.Forms.Panel();
             this.panel14 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.button6 = new System.Windows.Forms.Button();
             this.panel18 = new System.Windows.Forms.Panel();
             this.panel19 = new System.Windows.Forms.Panel();
-            this.panel21 = new System.Windows.Forms.Panel();
-            this.panel22 = new System.Windows.Forms.Panel();
             this.lblNombreUsuario = new System.Windows.Forms.Label();
             this.PictureFOTOPERFIL = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -106,12 +105,13 @@ namespace Proyecto
             this.cmbBusqueda = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.dgvClientess = new System.Windows.Forms.DataGridView();
+            this.panel22 = new System.Windows.Forms.Panel();
+            this.panel21 = new System.Windows.Forms.Panel();
             this.panel17.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel9.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel18.SuspendLayout();
-            this.panel21.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.PictureFOTOPERFIL)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel11.SuspendLayout();
@@ -130,6 +130,7 @@ namespace Proyecto
             this.panel8.SuspendLayout();
             this.panel12.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClientess)).BeginInit();
+            this.panel21.SuspendLayout();
             this.SuspendLayout();
             // 
             // mySqlCommand1
@@ -159,7 +160,7 @@ namespace Proyecto
             this.panel17.Name = "panel17";
             this.panel17.Size = new System.Drawing.Size(322, 411);
             this.panel17.TabIndex = 44;
-            this.panel17.Paint += new System.Windows.Forms.PaintEventHandler(this.panel17_Paint);
+            
             // 
             // btnGuardarIN
             // 
@@ -228,7 +229,7 @@ namespace Proyecto
             this.label5.Size = new System.Drawing.Size(50, 13);
             this.label5.TabIndex = 42;
             this.label5.Text = "Nombre";
-            this.label5.Click += new System.EventHandler(this.label5_Click);
+            
             // 
             // txtCelularIN
             // 
@@ -327,14 +328,29 @@ namespace Proyecto
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.SteelBlue;
+            this.panel3.Controls.Add(this.button6);
             this.panel3.Controls.Add(this.panel18);
-            this.panel3.Controls.Add(this.panel21);
             this.panel3.Controls.Add(this.lblNombreUsuario);
             this.panel3.Controls.Add(this.PictureFOTOPERFIL);
+            this.panel3.Controls.Add(this.panel21);
             this.panel3.Location = new System.Drawing.Point(1010, -5);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(219, 194);
             this.panel3.TabIndex = 39;
+            // 
+            // button6
+            // 
+            this.button6.BackColor = System.Drawing.Color.SteelBlue;
+            this.button6.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button6.ForeColor = System.Drawing.Color.SteelBlue;
+            this.button6.Image = ((System.Drawing.Image)(resources.GetObject("button6.Image")));
+            this.button6.Location = new System.Drawing.Point(3, 18);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(33, 38);
+            this.button6.TabIndex = 51;
+            this.button6.Text = ".";
+            this.button6.UseVisualStyleBackColor = false;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // panel18
             // 
@@ -355,26 +371,6 @@ namespace Proyecto
             this.panel19.Name = "panel19";
             this.panel19.Size = new System.Drawing.Size(245, 402);
             this.panel19.TabIndex = 2;
-            // 
-            // panel21
-            // 
-            this.panel21.AllowDrop = true;
-            this.panel21.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.panel21.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.panel21.Controls.Add(this.panel22);
-            this.panel21.Cursor = System.Windows.Forms.Cursors.Default;
-            this.panel21.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.panel21.Location = new System.Drawing.Point(0, 181);
-            this.panel21.Name = "panel21";
-            this.panel21.Size = new System.Drawing.Size(219, 13);
-            this.panel21.TabIndex = 34;
-            // 
-            // panel22
-            // 
-            this.panel22.Location = new System.Drawing.Point(1005, 24);
-            this.panel22.Name = "panel22";
-            this.panel22.Size = new System.Drawing.Size(245, 402);
-            this.panel22.TabIndex = 2;
             // 
             // lblNombreUsuario
             // 
@@ -422,7 +418,7 @@ namespace Proyecto
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1097, 194);
             this.panel1.TabIndex = 38;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            
             // 
             // panel11
             // 
@@ -989,7 +985,7 @@ namespace Proyecto
             this.panel12.Name = "panel12";
             this.panel12.Size = new System.Drawing.Size(621, 411);
             this.panel12.TabIndex = 41;
-            this.panel12.Paint += new System.Windows.Forms.PaintEventHandler(this.panel12_Paint);
+            
             // 
             // txtBusquedaIn
             // 
@@ -1028,7 +1024,27 @@ namespace Proyecto
             this.dgvClientess.RowHeadersWidth = 51;
             this.dgvClientess.Size = new System.Drawing.Size(526, 225);
             this.dgvClientess.TabIndex = 37;
-            this.dgvClientess.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvClientess_CellContentClick);
+            
+            // 
+            // panel22
+            // 
+            this.panel22.Location = new System.Drawing.Point(1005, 24);
+            this.panel22.Name = "panel22";
+            this.panel22.Size = new System.Drawing.Size(245, 402);
+            this.panel22.TabIndex = 2;
+            // 
+            // panel21
+            // 
+            this.panel21.AllowDrop = true;
+            this.panel21.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.panel21.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.panel21.Controls.Add(this.panel22);
+            this.panel21.Cursor = System.Windows.Forms.Cursors.Default;
+            this.panel21.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.panel21.Location = new System.Drawing.Point(0, 181);
+            this.panel21.Name = "panel21";
+            this.panel21.Size = new System.Drawing.Size(219, 13);
+            this.panel21.TabIndex = 34;
             // 
             // frmMenu
             // 
@@ -1060,7 +1076,6 @@ namespace Proyecto
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel18.ResumeLayout(false);
-            this.panel21.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.PictureFOTOPERFIL)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -1083,6 +1098,7 @@ namespace Proyecto
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvClientess)).EndInit();
+            this.panel21.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1103,8 +1119,6 @@ namespace Proyecto
         private System.Windows.Forms.Panel panel9;
         private System.Windows.Forms.Panel panel14;
         private System.Windows.Forms.Panel panel3;
-        private System.Windows.Forms.Panel panel21;
-        private System.Windows.Forms.Panel panel22;
         private System.Windows.Forms.Label lblNombreUsuario;
         private System.Windows.Forms.PictureBox PictureFOTOPERFIL;
         private System.Windows.Forms.Panel panel1;
@@ -1162,6 +1176,9 @@ namespace Proyecto
         private System.Windows.Forms.Panel panel19;
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.Panel panel15;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Panel panel21;
+        private System.Windows.Forms.Panel panel22;
 
         #endregion
         // dc60a0320d666aecba0489484133ddacfe43c1cd

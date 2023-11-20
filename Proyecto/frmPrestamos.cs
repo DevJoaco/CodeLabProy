@@ -2,12 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Windows.Forms;
-using System.IO;
 using System.Diagnostics;
-using System.Drawing.Printing;
 using System.Drawing;
-using System.Text;
+using System.Drawing.Printing;
+using System.IO;
+using System.Net;
+using System.Windows.Forms;
 
 
 
@@ -30,7 +30,7 @@ namespace Proyecto
             CargarPrestamos();
             this.Load += Prestamos_Load;
             CargarLabelsPrestamos();
-            
+
             cmbBusqueda.Items.Add("Nombre");
             cmbBusqueda.Items.Add("Apellido");
             cmbBusqueda.Items.Add("Tipo de Moneda");
@@ -474,9 +474,9 @@ namespace Proyecto
             try
             {
                 decimal tasaCambio = ObtenerCotizaciones(monedaId);
-                decimal interesesPesosUruguayos = intereses * tasaCambio; // Convierte los intereses a pesos uruguayos
+                decimal interesesPesosUruguayos = intereses * tasaCambio;
 
-                string consultaActualizarIntereses = "INSERT INTO ganancia (Intereses, Fecha_Ingreso) VALUES (@InteresesPesosUruguayos, NOW())";
+                string consultaActualizarIntereses = "INSERT INTO Ganancia (TipoOperacion, MontoGanancia, Fecha) VALUES ('Prestamo', @InteresesPesosUruguayos, CURRENT_TIMESTAMP)";
                 MySqlCommand cmdActualizarIntereses = new MySqlCommand(consultaActualizarIntereses, Conexion);
                 cmdActualizarIntereses.Parameters.AddWithValue("@InteresesPesosUruguayos", interesesPesosUruguayos);
 
@@ -486,9 +486,10 @@ namespace Proyecto
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error al actualizar la tabla 'ganancia': " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al actualizar la tabla 'Ganancia': " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
 
 
         private decimal ObtenerCotizaciones(int monedaId)
@@ -549,47 +550,63 @@ namespace Proyecto
                     string tipoMonedaPrestamo = reader["TipoMonedaPrestamo"].ToString();
                     decimal intereses = Convert.ToDecimal(reader["Intereses"]);
 
-                    
+
                     string reciboFormato = $@"
 
-                                                                     RECIBO DE PRÉSTAMO DE DINERO
+                                                                              PRÉSTAMO DE DINERO
 
 
-En Salto Uruguay. {fechaRealizacion:dd/MM/yyyy HH:mm:ss}
-
-
-
-
-La empresa Prestamista Agencia Libertad con domicilio ubicado en Artigas 622 certifica 
-que ha entregado la cantidad de {montoPrestado.ToString("0.00")} {tipoMonedaPrestamo} al prestatario {clienteNombre} {clienteApellido} 
-poseedor del número de identidad {clienteCedula} con domicilio ubicado en {clienteDireccion}.
-El préstamo cuenta con un interés de {intereses.ToString("0.00")} y debe ser devuelto en un plazo de {cuotas} meses. 
-El prestatario {clienteNombre} {clienteApellido} se compromete a pagar a la empresa prestamista Agencia Libertad
-la cantidad de {(montoADevolver / cuotas).ToString("0.00")} {tipoMonedaPrestamo} mensuales el día {fechaVencimiento:dd/MM/yyyy} de cada mes, lo que significa que se deberán 
-pagar {montoADevolver.ToString("0.00")} que liquidarán el total del préstamo.
-
-
-                                                               …………………………………………………………..
-                                                          Roberto Cordero (Agencia Libertad)          30357592
+    En Salto Uruguay. {fechaRealizacion:dd/MM/yyyy HH:mm:ss}
 
 
 
-                                                               ……………………………………………………………
-                                                         {clienteNombre} {clienteApellido}                  {clienteCedula}";
 
-                    
-                    string rutaImagen = "C:\\Users\\franzeira\\Desktop\\CodeLabProy\\imgs\\loginho.png";
 
-                   
-                    int imagenAncho = Image.FromFile(rutaImagen).Width / 2;
-                    int imagenAlto = Image.FromFile(rutaImagen).Height / 2;
 
-                  
-                    var result = MessageBox.Show("¿Desea imprimir la factura?", "Imprimir", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+
+    La empresa Prestamista Agencia Libertad con domicilio ubicado en Artigas 622 certifica 
+    que ha entregado la cantidad de {montoPrestado.ToString("0.00")} {tipoMonedaPrestamo} al prestatario {clienteNombre} {clienteApellido} 
+    poseedor del número de identidad {clienteCedula} con domicilio ubicado en {clienteDireccion}.
+    El préstamo cuenta con un interés de {intereses.ToString("0.00")} y debe ser devuelto en un plazo de {cuotas} meses. 
+    El prestatario {clienteNombre} {clienteApellido} se compromete a pagar a la empresa prestamista Agencia Libertad
+    la cantidad de {(montoADevolver / cuotas).ToString("0.00")} {tipoMonedaPrestamo} mensuales el día {fechaVencimiento:dd/MM/yyyy} de cada mes, lo que significa que se deberán 
+    pagar {montoADevolver.ToString("0.00")} que liquidarán el total del préstamo.
+
+
+
+
+
+
+
+                                                                   …………………………………………………………..
+                                                              Roberto Cordero (Agencia Libertad)          30357592
+
+
+
+                                                                   ……………………………………………………………
+                                                             {clienteNombre} {clienteApellido}                                                {clienteCedula}";
+
+
+                    string imageUrl = "https://imgur.com/quj0195.png";
+                    WebClient webClient = new WebClient();
+                    byte[] imageBytes = webClient.DownloadData(imageUrl);
+                    Image imagen;
+
+                    using (MemoryStream ms = new MemoryStream(imageBytes))
+                    {
+                        imagen = Image.FromStream(ms);
+                    }
+
+
+                    int imagenAncho = imagen.Width / 2;
+                    int imagenAlto = imagen.Height / 2;
+
+                    var result = MessageBox.Show("¿Desea imprimir el comprobante?", "Imprimir", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
                     if (result == DialogResult.Yes)
                     {
-                        // esto abre el cuadro de diálogo de impresión
+
                         PrintDialog printDialog = new PrintDialog();
                         PrintDocument pd = new PrintDocument();
                         printDialog.Document = pd;
@@ -598,11 +615,9 @@ pagar {montoADevolver.ToString("0.00")} que liquidarán el total del préstamo.
                         {
                             pd.PrintPage += (s, e) =>
                             {
-                                // Dibujar el formato del recibo
                                 e.Graphics.DrawString(reciboFormato, new Font("Arial", 10), Brushes.Black, 10, 10);
 
-                             
-                                Image imagen = Image.FromFile(rutaImagen);
+
                                 e.Graphics.DrawImage(imagen, e.PageBounds.Width - imagenAncho - 10, 10, imagenAncho, imagenAlto);
                             };
 
@@ -618,7 +633,6 @@ pagar {montoADevolver.ToString("0.00")} que liquidarán el total del préstamo.
                 MessageBox.Show("Error al obtener los detalles del préstamo: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
 
 
@@ -805,23 +819,8 @@ pagar {montoADevolver.ToString("0.00")} que liquidarán el total del préstamo.
 
 
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-
-
         private byte[] imagenCedula;
-        private void button2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void InsertarPDFEnBD(string nombreArchivo, byte[] archivoBytes)
-        {
-
-        }
+        
 
         private void txtBusqueda_TextChanged(object sender, EventArgs e)
         {
@@ -859,20 +858,12 @@ pagar {montoADevolver.ToString("0.00")} que liquidarán el total del préstamo.
             else
             {
                 CargarPrestamos();
-                
+
             }
         }
 
-    private void cmbBusqueda_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label11_Click(object sender, EventArgs e)
-        {
-
-        }
         
+
     }
 
 }

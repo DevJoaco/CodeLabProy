@@ -1,14 +1,8 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 namespace Proyecto
 {
@@ -233,7 +227,7 @@ namespace Proyecto
                     dgvMovimientos.DataSource = dataTable;
                 }
             }
-        }  
+        }
 
         private void button3_Click(object sender, EventArgs e)
         {
@@ -368,18 +362,7 @@ namespace Proyecto
             }
         }
 
-    
 
-
-        private void panel3_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void dgvMovimientos_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
 
         private void btnMovimientosRecientes_Click(object sender, EventArgs e)
         {

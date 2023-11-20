@@ -1,16 +1,10 @@
-﻿using OpenQA.Selenium.Edge;
+﻿using MySql.Data.MySqlClient;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Edge;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MySql.Data.MySqlClient;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Proyecto
 {
@@ -27,22 +21,22 @@ namespace Proyecto
         string CotizacionRealCompra = "0.00";
         string CotizacionRealVenta = "0.00";
 
-        
+
         public frmLoading()
         {
 
             InitializeComponent();
-            
+
         }
-       protected override void OnLoad(EventArgs e)
+        protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
             ThreadPool.QueueUserWorkItem((state) =>
             {
-         //  ExtraerCotizaciones();
-         //   ActualizarMonedas();
+                 ExtraerCotizaciones();
+                 ActualizarMonedas();
 
-               
+
                 this.Invoke(new Action(() =>
                 {
                     this.Hide();
@@ -52,11 +46,7 @@ namespace Proyecto
             });
         }
 
-        private void frmLoading_Load(object sender, EventArgs e)
-        {
-           
-        }
-
+        
         private void ExtraerCotizaciones()
         {
             var edgeDriveService = EdgeDriverService.CreateDefaultService();
@@ -65,18 +55,17 @@ namespace Proyecto
 
             try
             {
-               
                 IWebDriver driver = new EdgeDriver(edgeDriveService, edgeOptions);
                 driver.Manage().Window.Size = new Size(0, 0);
-               
 
-
-                // con esto se mueve la pestaña del edge afuera de la pantalla
+                
                 driver.Manage().Window.Position = new System.Drawing.Point(-2000, -2000);
-               
+
                 driver.Navigate().GoToUrl("https://www.brou.com.uy/web/guest/cotizaciones");
 
-                // esto encuentra los elementos que contienen las cotizaciones
+               
+                Thread.Sleep(3000);
+
                 var elementosCotizaciones = driver.FindElements(By.ClassName("valor"));
 
                 CotizacionDolarCompra = elementosCotizaciones[4].Text;
@@ -94,7 +83,7 @@ namespace Proyecto
                 CotizacionRealCompra = elementosCotizaciones[20].Text;
                 CotizacionRealVenta = elementosCotizaciones[21].Text;
 
-                //esto deja la posición original de la pestaña del navegador
+                // Esto deja la posición original de la pestaña del navegador
                 driver.Manage().Window.Position = new System.Drawing.Point(0, 0);
 
                 driver.Quit();
@@ -104,7 +93,6 @@ namespace Proyecto
                 edgeDriveService.Dispose();
             }
         }
-
 
 
         private void ActualizarMonedas()
@@ -156,7 +144,7 @@ namespace Proyecto
                         command.Parameters.AddWithValue("@ValorVenta", CotizacionRealVenta.ToString().Replace(",", "."));
                         command.ExecuteNonQuery();
 
-                       
+
                     }
                 }
             }
@@ -167,14 +155,6 @@ namespace Proyecto
         }
 
 
-            private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
+       
     }
 }

@@ -1,10 +1,11 @@
 ﻿using MySql.Data.MySqlClient;
-using MySqlX.XDevAPI;
 using System;
 using System.Data;
-using System.Windows.Forms;
 using System.IO;
-
+using System.Net;
+using System.Windows.Forms;
+using System.Drawing;
+using System.Drawing.Printing;
 
 namespace Proyecto
 {
@@ -19,7 +20,7 @@ namespace Proyecto
 
         private MySqlConnection conexion;
         public MySqlConnection Conexion { get; set; }
-
+        public static string NombreUsuarioStatic { get; private set; }
 
         public frmConfiguracion(string nombreUsuario, MySqlConnection conexion)
         {
@@ -31,6 +32,12 @@ namespace Proyecto
             this.Load += Form4_Load;
             this.nombreUsuario = nombreUsuario;
             this.conexion = conexion;
+            NombreUsuarioStatic = nombreUsuario;
+
+
+
+
+
 
 
         }
@@ -45,7 +52,11 @@ namespace Proyecto
         private void Form4_Load(object sender, EventArgs e)
         {
             CargarClientesDeaca();
+            cmbInforme.Items.Add("Diario");
+            cmbInforme.Items.Add("Semanal");
+            cmbInforme.Items.Add("Mensual");
 
+            cmbInforme.SelectedIndex = 0;
 
         }
         public void CargarClientesDeaca()
@@ -78,13 +89,7 @@ namespace Proyecto
             form3.Show();
         }
 
-        private void bntIngresarM_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
-
+        
         private void btnSubirFoto_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -115,7 +120,8 @@ namespace Proyecto
                             if (filasAfectadas > 0)
                             {
                                 MessageBox.Show("Imagen de perfil actualizada correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                
+                              
+
                             }
                             else
                             {
@@ -134,7 +140,7 @@ namespace Proyecto
                 }
             }
         }
-       
+
         private string ObtenerNombreDeUsuarioDeLaSesion()
         {
             return nombreUsuario;
@@ -329,24 +335,134 @@ namespace Proyecto
                 }
             }
         }
-
-
-
-
-        private void label1_Click(object sender, EventArgs e)
+        private void GenerarInforme()
         {
+            try
+            {
+                string periodoSeleccionado = cmbInforme.SelectedItem.ToString();
+                DateTime fechaInicio;
+                DateTime fechaFin;
 
+                // establecer las fechas de inicio y fin según el período seleccionado
+                switch (periodoSeleccionado)
+                {
+                    case "Diario":
+                        fechaInicio = DateTime.Now.Date;
+                        fechaFin = DateTime.Now.Date.AddDays(1).AddSeconds(-1);
+                        break;
+
+                    case "Semanal":
+                        fechaInicio = DateTime.Now.AddDays(-7).Date;
+                        fechaFin = DateTime.Now.Date.AddDays(1).AddSeconds(-1);
+                        break;
+
+                    case "Mensual":
+                        fechaInicio = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                        fechaFin = fechaInicio.AddMonths(1).AddSeconds(-1);
+                        break;
+
+                    default:
+                        MessageBox.Show("Seleccione un período válido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                }
+
+                // consulta para obtener la ganancia total en el período seleccionado
+                string consultaGanancias = "SELECT SUM(MontoGanancia) AS GananciaTotal FROM Ganancia WHERE Fecha BETWEEN @FechaInicio AND @FechaFin";
+                MySqlCommand cmdGanancias = new MySqlCommand(consultaGanancias, Conexion);
+                cmdGanancias.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+                cmdGanancias.Parameters.AddWithValue("@FechaFin", fechaFin);
+
+                Conexion.Open();
+                decimal gananciaTotal = Convert.ToDecimal(cmdGanancias.ExecuteScalar());
+
+                // consultas para obtener ganancias por préstamos, compras y ventas en el período seleccionado
+                decimal gananciaPrestamos = ObtenerGananciaPorTipoOperacion("Prestamo", fechaInicio, fechaFin);
+                decimal gananciaCompras = ObtenerGananciaPorTipoOperacion("Compra", fechaInicio, fechaFin);
+                decimal gananciaVentas = ObtenerGananciaPorTipoOperacion("Venta", fechaInicio, fechaFin);
+
+                
+                string TipoMonedaGanancia = "Pesos Uruguayos";
+
+                
+                string informeFormato = $@"
+
+                                                                          INFORME GENERAL
+
+
+Salto, Uruguay. {DateTime.Now:dd/MM/yyyy HH:mm:ss}
+
+
+
+
+Se ha generado un informe de las ganancias en el período seleccionado ({periodoSeleccionado}).
+
+Ganancia total en el período: {gananciaTotal.ToString("0.00")} {TipoMonedaGanancia}.
+Ganancia por préstamos: {gananciaPrestamos.ToString("0.00")} {TipoMonedaGanancia}.
+Ganancia por compras: {gananciaCompras.ToString("0.00")} {TipoMonedaGanancia}.
+Ganancia por ventas: {gananciaVentas.ToString("0.00")} {TipoMonedaGanancia}.
+
+Las ganancias provienen de diversas operaciones realizadas en la empresa durante este tiempo.
+
+                                                              ";
+
+                string imageUrl = "https://imgur.com/quj0195.png";
+                WebClient webClient = new WebClient();
+                byte[] imageBytes = webClient.DownloadData(imageUrl);
+                Image imagen;
+
+                using (MemoryStream ms = new MemoryStream(imageBytes))
+                {
+                    imagen = Image.FromStream(ms);
+                }
+
+                int imagenAncho = imagen.Width / 2;
+                int imagenAlto = imagen.Height / 2;
+
+                var result = MessageBox.Show("¿Desea imprimir el informe?", "Imprimir", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    PrintDialog printDialog = new PrintDialog();
+                    PrintDocument pd = new PrintDocument();
+                    printDialog.Document = pd;
+
+                    pd.PrintPage += (s, e) =>
+                    {
+                        e.Graphics.DrawString(informeFormato, new Font("Arial", 10), Brushes.Black, 10, 10);
+                        e.Graphics.DrawImage(imagen, e.PageBounds.Width - imagenAncho - 10, 10, imagenAncho, imagenAlto);
+                    };
+
+                    if (printDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        pd.Print();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al generar el informe: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Conexion.Close();
+            }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
+        private decimal ObtenerGananciaPorTipoOperacion(string tipoOperacion, DateTime fechaInicio, DateTime fechaFin)
         {
+            string consultaGananciaPorTipoOperacion = $"SELECT SUM(MontoGanancia) FROM Ganancia WHERE TipoOperacion = @TipoOperacion AND Fecha BETWEEN @FechaInicio AND @FechaFin";
+            MySqlCommand cmdGananciaPorTipoOperacion = new MySqlCommand(consultaGananciaPorTipoOperacion, Conexion);
+            cmdGananciaPorTipoOperacion.Parameters.AddWithValue("@TipoOperacion", tipoOperacion);
+            cmdGananciaPorTipoOperacion.Parameters.AddWithValue("@FechaInicio", fechaInicio);
+            cmdGananciaPorTipoOperacion.Parameters.AddWithValue("@FechaFin", fechaFin);
 
+            return Convert.ToDecimal(cmdGananciaPorTipoOperacion.ExecuteScalar());
         }
 
-        private void panel9_Paint(object sender, PaintEventArgs e)
-        {
 
-        }
+
+
+
 
         private void btnCotizaciones_Click(object sender, EventArgs e)
         {
@@ -355,17 +471,11 @@ namespace Proyecto
             frmCotizacionesBrou.Show();
         }
 
-        private void panel2_Paint(object sender, PaintEventArgs e)
+
+        private void button2_Click(object sender, EventArgs e)
         {
-
+            GenerarInforme();
         }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        
     }
 
 }

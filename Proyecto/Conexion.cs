@@ -1,7 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using Proyecto;
-using System;
-using System.Collections.Generic;
 
 class Conexion
 {
@@ -12,13 +9,13 @@ class Conexion
     private string password = "11452020";
     private int port = 3306;
     private string cadenaConexion;
-        
+
     public Conexion()
     {
         cadenaConexion = "Server=" + server +
            "; Port=" + port +
             "; Database=" + database +
-            "; User ID=" + user +   
+            "; User ID=" + user +
             "; Password=" + password;
     }
 
@@ -32,7 +29,7 @@ class Conexion
 
         return conexion;
     }
-    
+
 
 }
 

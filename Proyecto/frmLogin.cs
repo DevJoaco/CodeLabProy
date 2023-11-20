@@ -9,7 +9,7 @@ using System.Windows.Forms;
 namespace Proyecto
 {
     public partial class frmLogin : Form
- 
+
     {
         private MySqlConnection conexion;
         private Conexion miConexion;
@@ -71,30 +71,30 @@ namespace Proyecto
 
         private void btnMouseEnter(object sender, EventArgs e)
         {
-            
 
-            Button bt = sender as Button; 
 
-            foreach (Control ctr in pPrincipal.Controls)  
+            Button bt = sender as Button;
+
+            foreach (Control ctr in pPrincipal.Controls)
             {
-                if (ctr is Button)   
+                if (ctr is Button)
                 {
-                    bt.BackColor = Color.DarkGray; 
+                    bt.BackColor = Color.DarkGray;
                 }
             }
         }
 
         private void btnMouseLeave(object sender, EventArgs e)
         {
-            
 
-            Button bt = sender as Button; 
 
-            foreach (Control ctr in pPrincipal.Controls)  
+            Button bt = sender as Button;
+
+            foreach (Control ctr in pPrincipal.Controls)
             {
-                if (ctr is Button)   
+                if (ctr is Button)
                 {
-                    bt.BackColor = Color.White; 
+                    bt.BackColor = Color.SeaGreen;
                 }
             }
         }
@@ -107,7 +107,7 @@ namespace Proyecto
         }
 
         private void btnRegistrarse_Click(object sender, EventArgs e)
-        {          
+        {
             Form fRegistro = new frmRegistro();
             Form fLogin = new frmLogin();
 
@@ -130,12 +130,12 @@ namespace Proyecto
 
         private void txtUsuarioIS_Enter(object sender, EventArgs e)
         {
-            pUsuarioIS.BackColor = Color.Black; 
+            pUsuarioIS.BackColor = Color.Black;
         }
 
         private void txtUsuarioIS_Leave(object sender, EventArgs e)
         {
-            pUsuarioIS.BackColor = Color.Silver; 
+            pUsuarioIS.BackColor = Color.Silver;
         }
 
         private void TextBoxContraseña_MouseEnter(object sender, EventArgs e)
@@ -150,12 +150,12 @@ namespace Proyecto
 
         private void TextBoxContraseña_Enter(object sender, EventArgs e)
         {
-            pContraseñaIS.BackColor = Color.Black; 
+            pContraseñaIS.BackColor = Color.Black;
         }
 
         private void TextBoxContraseña_Leave(object sender, EventArgs e)
         {
-            pContraseñaIS.BackColor = Color.Silver; 
+            pContraseñaIS.BackColor = Color.Silver;
         }
 
         private void PanelContraseña_MouseEnter(object sender, EventArgs e)
@@ -258,83 +258,8 @@ namespace Proyecto
                 txtContraseñaIS.UseSystemPasswordChar = false;
             }
         }
-                     
 
 
-
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-        private void label14_Click(object sender, EventArgs e)
-        {
-            // LABEL INICIAR SESIÓN  ( LABEL )
-        }
-
-        private void Cerrar_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
-        private void label1_Click(object sender, EventArgs e)
-        {
-            // AUN NO TIENES UNA CUENTA       ( LABEL )
-        }
-
-        private void label4_Click(object sender, EventArgs e)
-        {
-            // YA CUENTAS CON UNA CUENTA      ( LABEL )
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-            // INGRESA DANDOLE CLICK AL BOTON DE ABAJO        ( LABEL )
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            // BOTON ACCEDER          ( BUTTON ) btnAcceder
-
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-            // REGISTRATE DANDOLE CLICK AL BOTON DE ABAJO         ( LABEL ) 
-
-        }
-
-        private void pContenedor_Paint(object sender, PaintEventArgs e)
-        {
-            // PANEL CONTENEDOR          ( PANEL ) pContenedor
-
-        }
-
-
-        private void btnRegistrar_Click(object sender, EventArgs e)
-        {
-            // BOTON REGISTRAR    ( BUTTON )  btnRegistrar
-
-        }
-
-        private void pIniciarSesión_Paint(object sender, PaintEventArgs e)
-        {
-            // INICIAR SESIÓN        ( PANEL )     pIniciarSesión
-        }
-
-
-
-        private void pContraseñaIS_Paint(object sender, PaintEventArgs e)
-        {
-            // CONTRASEÑA INICIAR SESIÓN   ( PANEL ) pContraseñaIS
-
-        }
-
-        private void pUsuarioIS_Paint(object sender, PaintEventArgs e)
-        {
-            // USUARIO INICIAR SESIÓN   ( PANEL ) pUsuarioIS
-
-        }
 
         private void btnIniciarSesión_KeyPress(object sender, KeyPressEventArgs e)
         {
